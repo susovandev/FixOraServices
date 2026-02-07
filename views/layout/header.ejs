@@ -1,0 +1,98 @@
+<header class="sticky top-0 z-50 bg-white border-b">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <img src="/assets/logo.png" class="h-8" alt="FixOra Logo" />
+      <span class="font-semibold text-lg">
+        FixOra <br />
+        <span class="font-normal text-gray-600">Services</span>
+      </span>
+    </div>
+
+    <!-- Nav -->
+    <nav class="hidden md:flex gap-6 text-sm font-medium">
+      <a href="#" class="hover:text-black">Revamp</a>
+      <a href="#" class="hover:text-black">Native</a>
+      <a href="#" class="hover:text-black">Beauty</a>
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-4 relative">
+      <!-- Location (future live) -->
+      <button
+        class="hidden lg:flex items-center gap-1 text-sm text-gray-600 hover:text-black"
+        id="location-btn"
+      >
+        <i data-lucide="map-pin" class="w-4 h-4"></i>
+        <span id="location-text">Dadar, Mumbai</span>
+      </button>
+
+      <!-- Search -->
+      <div class="relative hidden md:block">
+        <input
+          type="text"
+          placeholder="Search for services"
+          class="px-3 py-2 w-56 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          id="service-search"
+        />
+
+        <!-- Search Dropdown -->
+        <div
+          id="search-dropdown"
+          class="absolute mt-2 w-full bg-white border rounded-lg shadow-lg hidden"
+        >
+          <!-- Dynamic items -->
+          <div class="p-3 text-sm text-gray-500">Start typing to search…</div>
+        </div>
+      </div>
+
+      <!-- Icons -->
+      <div class="flex items-center gap-3">
+        <!-- Cart -->
+        <button class="p-2 rounded-full hover:bg-gray-100 transition">
+          <i class="w-5 h-5 fas fa-shopping-cart"></i>
+        </button>
+
+        <!-- Profile -->
+        <div class="relative group">
+          <button class="p-2 rounded-full hover:bg-gray-100 transition">
+            <i class="w-5 h-5 fas fa-user"></i>
+          </button>
+
+          <div class="relative">
+            <!-- Profile Button -->
+            <button id="profileBtn" class="p-2 rounded-full hover:bg-gray-100 transition">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Dropdown -->
+            <div
+              id="profileDropdown"
+              class="absolute right-0 mt-2 bg-white border rounded-xl shadow-lg opacity-0 scale-95 pointer-events-none transition-all duration-150 origin-top-right"
+            >
+              <% if (!user) { %>
+              <!-- Logged OUT -->
+              <button
+                id="openLoginModal"
+                class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+              >
+                Login
+              </button>
+              <% } else { %>
+              <!-- Logged IN -->
+              <div class="px-4 py-2 text-sm text-gray-500">Hi, <%= user.username %></div>
+              <hr />
+              <a href="/bookings" class="block px-4 py-2 text-sm hover:bg-gray-50"> Dashboard </a>
+              <a href="/profile" class="block px-4 py-2 text-sm hover:bg-gray-50"> Profile </a>
+              <hr />
+              <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                Logout
+              </a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
