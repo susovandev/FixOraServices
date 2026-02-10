@@ -1,0 +1,372 @@
+<html>
+  <%- include('../../partials/head.ejs', { title: pageTitle || 'Services' }) %>
+
+  <body class="bg-gray-50 min-h-screen">
+    <%- include("../../partials/toast.ejs") %>
+
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <%- include('./components/sidebar.ejs') %>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- TOP BAR -->
+      <%- include('./components/main-header.ejs') %>
+
+      <!-- CONTENT -->
+      <main class="flex-1 p-6 space-y-6">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between">
+  <div>
+    <h1 class="text-2xl font-semibold text-slate-800">
+      Service Pricing
+    </h1>
+    <p class="text-sm text-slate-500">
+      City-wise pricing and commission control
+    </p>
+  </div>
+
+  <button
+    data-open-modal="create-pricing"
+    class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold
+           shadow-sm hover:bg-indigo-700 transition flex items-center gap-2"
+  >
+    <i class="fa-solid fa-plus"></i>
+    New Pricing
+  </button>
+</div>
+
+
+        <!-- TABLE CARD -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-visible">
+
+  <table class="w-full text-sm">
+    <thead class="bg-gray-50 text-slate-600">
+      <tr>
+        <th class="px-6 py-4 text-left">Service</th>
+        <th class="px-6 py-4 text-left">City</th>
+        <th class="px-6 py-4 text-left">Base Price</th>
+        <th class="px-6 py-4 text-left">Commission</th>
+        <th class="px-6 py-4 text-left">Extra Charges</th>
+        <th class="px-6 py-4 text-left">Updated</th>
+        <th class="px-6 py-4 text-right">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody class="divide-y">
+                  <% if (!pricing.length) { %>
+              <!-- EMPTY -->
+              <tr>
+                <td colspan="6" class="px-6 py-20 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                      <i class="fa-solid fa-layer-group text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">
+                      No service found
+                    </h3>
+                    <p class="text-sm text-gray-500 max-w-md">
+                      Create a new service to group your services and manage pricing easily.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            <% } else { %>
+      <% pricing.forEach(p => { %>
+        <tr class="hover:bg-gray-50/70">
+
+          <td class="px-6 py-4 font-medium"><%= p.serviceId.name %></td>
+          <td class="px-6 py-4"><%= p.city %></td>
+          <td class="px-6 py-4">₹ <%= p.basePrice %></td>
+          <td class="px-6 py-4"><%= p.commissionPercent %>%</td>
+
+          <td class="px-6 py-4">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold
+              <%= p.extraChargesAllowed
+                ? 'bg-emerald-100 text-emerald-700'
+                : 'bg-rose-100 text-rose-700' %>">
+              <%= p.extraChargesAllowed ? 'Allowed' : 'Not Allowed' %>
+            </span>
+          </td>
+
+          <td class="px-6 py-4 text-slate-500">
+            <%= new Date(p.updatedAt).toDateString() %>
+          </td>
+
+          <!-- ACTIONS -->
+          <td class="px-6 py-4 text-right">
+  <div class="inline-flex items-center gap-2">
+
+    <!-- Edit (Primary) -->
+    <button
+      class="edit-pricing-btn inline-flex items-center gap-2
+             px-3 py-1.5 rounded-lg
+             text-indigo-600 font-semibold text-sm
+             hover:bg-indigo-50 transition"
+      data-id="<%= p._id %>"
+      data-service="<%= p.serviceId._id %>"
+      data-city="<%= p.city %>"
+      data-price="<%= p.basePrice %>"
+      data-commission="<%= p.commissionPercent %>"
+      data-extra="<%= p.extraChargesAllowed %>"
+    >
+      <i class="fa-solid fa-pen-to-square text-xs"></i>
+      <span>Edit</span>
+    </button>
+
+    <!-- History (Secondary) -->
+    <button
+      class="view-history-btn inline-flex items-center gap-2
+             px-3 py-1.5 rounded-lg
+             text-slate-500 text-sm
+             hover:bg-slate-100 transition"
+      data-pricing-id="<%= p._id %>"
+      title="View pricing history"
+    >
+      <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+      <span>History</span>
+    </button>
+
+  </div>
+</td>
+
+
+        </tr>
+        <tr
+  id="history-row-<%= p._id %>"
+  class="hidden bg-slate-50"
+>
+  <td colspan="7" class="px-6 py-5">
+    <div
+      id="history-content-<%= p._id %>"
+      class="space-y-3 text-sm text-slate-600"
+    >
+      <div class="text-slate-400 italic">
+        Loading history...
+      </div>
+    </div>
+  </td>
+</tr>
+
+      <% }) %>
+      <% } %>
+    </tbody>
+
+  </table>
+</div>
+
+</main>
+
+      <%- include('./components/footer.ejs') %>
+    </div>
+  </div>
+
+
+<!-- CREATE PRICING MODAL -->
+<%- include("./components/model/create-pricing.ejs") %>
+
+<!-- EDIT PRICING MODAL -->
+<%- include("./components/model/edit-pricing.ejs") %>
+
+
+
+<script>
+  const cityInput = document.getElementById('citySearchInput');
+  const cityValue = document.getElementById('cityValue');
+  const cityDropdown = document.getElementById('cityDropdown');
+  const cityOptions = document.querySelectorAll('.city-option');
+
+  // OPEN dropdown
+  cityInput.addEventListener('focus', () => {
+    cityDropdown.classList.remove('hidden');
+  });
+
+  // SEARCH filter
+  cityInput.addEventListener('input', () => {
+    const query = cityInput.value.toLowerCase();
+
+    cityOptions.forEach(option => {
+      const city = option.dataset.city.toLowerCase();
+      option.style.display = city.includes(query) ? 'block' : 'none';
+    });
+  });
+
+  // SELECT city
+  cityOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      cityInput.value = option.dataset.city;
+      cityValue.value = option.dataset.city;
+
+      cityDropdown.classList.add('hidden');
+    });
+  });
+
+  // CLOSE when clicking outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#cityDropdown') && e.target !== cityInput) {
+      cityDropdown.classList.add('hidden');
+    }
+  });
+</script>
+
+
+<script>
+  document.querySelectorAll('[data-open-modal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modalId = btn.dataset.openModal + '-modal';
+      const modal = document.getElementById(modalId);
+
+      if (!modal) {
+        console.error('Modal not found:', modalId);
+        return;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+  });
+
+  // CLOSE MODAL
+  document.querySelectorAll('[data-close-modal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modal = btn.closest('.modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+  });
+
+  // CLICK OUTSIDE TO CLOSE
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+  const editModal = document.getElementById('edit-pricing-modal');
+  const editForm = document.getElementById('editPricingForm');
+
+  const editServiceId = document.getElementById('editServiceId');
+  const editCityInput = document.getElementById('editCitySearchInput');
+  const editCityValue = document.getElementById('editCityValue');
+  const editBasePrice = document.getElementById('editBasePrice');
+  const editCommission = document.getElementById('editCommission');
+  const editExtra = document.getElementById('editExtra');
+
+  document.querySelectorAll('.edit-pricing-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+
+      // Set form action
+      editForm.action = `/admin/pricing/${btn.dataset.id}?_method=PUT`;
+
+      // Fill data
+      editServiceId.value = btn.dataset.service;
+      editCityInput.value = btn.dataset.city;
+      editCityValue.value = btn.dataset.city;
+      editBasePrice.value = btn.dataset.price;
+      editCommission.value = btn.dataset.commission;
+      editExtra.checked = btn.dataset.extra === 'true';
+
+      // Show modal
+      editModal.classList.remove('hidden');
+      editModal.classList.add('flex');
+    });
+  });
+
+});
+
+function closeEditPricing() {
+  const modal = document.getElementById('edit-pricing-modal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+</script>
+
+<!-- VIEW HISTORY SECTION -->
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  document.querySelectorAll('.view-history-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+
+      const pricingId = btn.dataset.pricingId;
+      const row = document.getElementById(`history-row-${pricingId}`);
+      const content = document.getElementById(`history-content-${pricingId}`);
+
+      // Toggle close
+      if (!row.classList.contains('hidden')) {
+        row.classList.add('hidden');
+        return;
+      }
+
+      // Close other open history rows (optional but nice UX)
+      document.querySelectorAll('[id^="history-row-"]').forEach(r => {
+        r.classList.add('hidden');
+      });
+
+      row.classList.remove('hidden');
+
+      // Load history only once
+      if (row.dataset.loaded) return;
+
+      try {
+        const res = await fetch(`/admin/pricing/${pricingId}/history`);
+        const history = await res.json();
+        console.log(history);
+
+        if (!history.length) {
+          content.innerHTML = `
+            <div class="text-slate-400 italic">
+              No pricing history available.
+            </div>
+          `;
+        } else {
+          content.innerHTML = history.map(h => `
+            <div class="flex justify-between items-center
+                        bg-white border border-slate-200 rounded-lg px-4 py-3">
+
+              <div>
+                <div class="font-medium text-slate-800">
+                  ₹${h.oldPrice} → ₹${h.newPrice}
+                </div>
+                <div class="text-xs text-slate-500">
+                  Commission: ${h.oldCommission}% → ${h.newCommission}%
+                </div>
+              </div>
+
+              <div class="text-right text-xs text-slate-500">
+                <div>${h.changedBy?.name || 'Admin'}</div>
+                <div>${new Date(h.changedAt).toLocaleString()}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        row.dataset.loaded = true;
+
+      } catch (err) {
+        content.innerHTML = `
+          <div class="text-rose-600">
+            Failed to load history
+          </div>
+        `;
+      }
+    });
+  });
+
+});
+</script>
+
+
+  <%- include('../../partials/toast-script.ejs') %>
+  </body>
+
+</html>

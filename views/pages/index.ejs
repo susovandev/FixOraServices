@@ -4,6 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= title %></title>
 
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,14 +19,31 @@
     body {
       font-family: 'Inter', sans-serif;
     }
+    /* Hide scrollbar but keep swipe */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;  /* IE & Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+
   </style>
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   />
+  
 </head>
 
 <body>
+<%- include("../partials/toast.ejs") %>
+<!-- TOAST CONTAINER -->
+<div
+  id="toastContainer"
+  class="fixed top-6 right-6 z-[9999] space-y-3"
+></div>
+<!-- Header -->
 <header class="sticky top-0 z-50 bg-white border-b">
   <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
     <!-- Logo -->
@@ -130,18 +149,19 @@
       </div>
   </div>
 </header>
+<!-- Header -->
 
-
+<!-- Main -->
 <main class="min-h-screen">
   <!-- HERO -->
-  <section class="bg-white py-20">
+  <!-- <section class="bg-white py-20">
     <div class="max-w-7xl mx-auto px-6 text-center">
       <h1 class="text-4xl font-bold mb-4">Premium Home Services, On Demand</h1>
       <p class="text-gray-600 max-w-xl mx-auto">
         Trusted professionals for cleaning, beauty, repairs & more
       </p>
     </div>
-  </section>
+  </section> -->
 
   <!-- SHOWCASE / TRUST SECTION -->
 <section class="bg-white py-20">
@@ -205,25 +225,25 @@
     <div class="grid grid-cols-2 gap-4">
       <!-- Replace src with your own images -->
       <img
-        src="/assets/showcase-1.jpg"
+        src="https://plus.unsplash.com/premium_photo-1683121705485-e0c26875489e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         class="rounded-xl object-cover w-full h-full"
         alt="Service Image 1"
       />
 
       <img
-        src="/assets/showcase-2.jpg"
+        src="https://plus.unsplash.com/premium_photo-1683120897865-b09acb266810?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         class="rounded-xl object-cover w-full h-full"
         alt="Service Image 2"
       />
 
       <img
-        src="/assets/showcase-3.jpg"
+        src="https://plus.unsplash.com/premium_photo-1680297038160-89157d0c56d4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         class="rounded-xl object-cover w-full h-full col-span-1"
         alt="Service Image 3"
       />
 
       <img
-        src="/assets/showcase-4.jpg"
+        src="https://images.unsplash.com/photo-1749532125405-70950966b0e5?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         class="rounded-xl object-cover w-full h-full col-span-1"
         alt="Service Image 4"
       />
@@ -233,22 +253,165 @@
 </section>
 
 
-  <!-- SERVICES -->
-  <section class="py-10">
-    <div class="max-w-7xl mx-auto px-6">
-      <h2 class="text-2xl font-semibold mb-8">Popular Services</h2>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <% for(let i = 0; i < 8; i++) { %>
-        <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition">
-          <div class="h-12 w-12 bg-gray-100 rounded mb-4"></div>
-          <h3 class="font-medium">Service Name</h3>
-          <p class="text-sm text-gray-500">Starting ₹499</p>
-        </div>
-        <% } %>
-      </div>
+  <!-- POPULAR SERVICES -->
+<section class="py-20">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-10">
+      <h2 class="text-3xl font-semibold">Popular Services</h2>
+      <p class="text-gray-600 mt-1">
+        of our finest experiences
+      </p>
     </div>
-  </section>
+
+    <div  class="flex gap-6 overflow-x-auto scroll-smooth
+    snap-x snap-mandatory no-scrollbar overscroll-x-contain touch-pan-x p-4"> 
+      <% 
+      const popularServices = [
+        { _id: 1, title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop", price:299 },
+        { _id: 1, title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop", price:399 },
+        { _id: 1, title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop", price:599 },
+        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop", price:199 },
+        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop", price:99 },
+        { _id: 1, title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop", price:299 },
+        { _id: 1, title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop", price:399 },
+        { _id: 1, title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop", price:599 },
+        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop", price:199 },
+        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop", price:99 },
+        { _id: 1, title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop", price:299 },
+        { _id: 1, title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop", price:399 },
+        { _id: 1, title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop", price:599 },
+        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop", price:199 },
+        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop", price:99 },
+      ];
+    %>
+
+    <!-- GRID SHOULD BE HERE -->
+  <% popularServices.forEach(ps => { %>
+
+<a href="<%= ps._id %>">
+  <div
+  class="relative min-w-[260px] rounded-2xl overflow-hidden
+  cursor-pointer shadow-sm hover:shadow-lg transition
+  snap-start"
+>
+
+  <!-- Image -->
+  <div class="aspect-[4/5] bg-gray-100">
+    <img
+      src="<%= ps.image %>"
+      alt="<%= ps.title %>"
+      class="w-full h-full object-cover"
+    />
+  </div>
+
+  <!-- Content -->
+  <div class="p-4 space-y-2">
+
+    <!-- Title -->
+    <h3 class="text-base font-semibold leading-tight">
+      <%= ps.title %>
+    </h3>
+
+    <!-- Rating + Instant -->
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span class="flex items-center gap-1">
+        ⭐ <span class="font-medium">4.73</span>
+      </span>
+
+      <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
+
+      <span class="flex items-center gap-1 text-green-600 font-medium">
+        ⚡ Instant
+      </span>
+    </div>
+
+    <!-- Price -->
+    <p class="text-sm font-medium">
+      ₹<%= ps.price %>
+    </p>
+
+  </div>
+</div>
+</a>
+
+
+  <% }); %>
+</div>
+</div>
+</section>
+
+
+  <!-- VIDEO PROOF / CURATIONS -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Heading -->
+    <div class="mb-10">
+      <h2 class="text-3xl font-semibold">Thoughtful curations</h2>
+      <p class="text-gray-600 mt-1">
+        of our finest experiences
+      </p>
+    </div>
+
+    <!-- Video Slider -->
+    <div  class="flex gap-6 overflow-x-auto scroll-smooth
+  snap-x snap-mandatory
+  no-scrollbar
+  overscroll-x-contain touch-pan-x">
+
+      <% 
+        const videos = [
+          { title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",  video: 'videos/wall-panels.mp4' },
+          { title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",  video: 'videos/bathroom.mp4' },
+          { title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", video: 'videos/kitchen.mp4' },
+          { title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", video: 'videos/painting.mp4' },
+          { title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", video: 'videos/painting.mp4' },
+        ];
+      %>
+
+      <% videos.forEach(v => { %>
+        <div
+        class="relative min-w-[260px] h-[420px] rounded-2xl overflow-hidden
+  cursor-pointer group shadow-sm hover:shadow-lg transition
+  snap-start"
+  onclick="openVideo('<%= v.video %>')"
+        >
+
+          <img
+            src="<%= v.image %>"
+            alt="<%= v.title %>"
+            class="w-full h-full object-cover"
+          />
+
+          <!-- Dark overlay -->
+          <div class="absolute inset-0 bg-black/20"></div>
+
+          <!-- Play Button -->
+          <div
+            class="absolute inset-0 flex items-center justify-center"
+          >
+            <div
+              class="w-16 h-16 rounded-full bg-white/90
+              flex items-center justify-center
+              group-hover:scale-110 transition"
+            >
+              <i class="fas fa-play text-black ml-1"></i>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <div class="absolute bottom-4 left-4 right-4">
+            <p class="text-white text-xl font-semibold leading-snug">
+              <%= v.title %>
+            </p>
+          </div>
+        </div>
+      <% }) %>
+
+    </div>
+  </div>
+</section>
+
 
   <!-- APPLIANCE SERVICES -->
 <section class="py-10 bg-white">
@@ -267,22 +430,16 @@
         >
           See all
         </a>
-
-        <!-- Slider Button -->
-        <button
-          id="applianceNext"
-          class="w-10 h-10 rounded-full border flex items-center justify-center
-          hover:bg-gray-100 transition"
-        >
-          <i class="fas fa-arrow-right"></i>
-        </button>
       </div>
     </div>
 
     <!-- Slider -->
     <div
       id="applianceSlider"
-      class="flex gap-6 overflow-x-hidden scroll-smooth"
+      class="flex gap-6 overflow-x-auto scroll-smooth
+      snap-x snap-mandatory
+      no-scrollbar
+      overscroll-x-contain touch-pan-x"
     >
       <% 
         const appliances = [
@@ -484,7 +641,9 @@
     </div>
   </section>
 </main>
+<!-- Main -->
 
+<!-- Footer -->
 <footer class="bg-gray-100 mt-20">
   <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-10">
 
@@ -492,10 +651,10 @@
     <div>
       <h4 class="font-semibold mb-4">FixOraServices</h4>
       <ul class="space-y-2 text-sm text-gray-600">
-        <li>About us</li>
-        <li>Careers</li>
-        <li>Terms & Conditions</li>
-        <li>Privacy Policy</li>
+        <li><a href="/about">About us</a></li>
+        <li><a href="/career">Careers</a></li>
+        <li><a href="/terms">Terms & Conditions</a></li>
+        <li><a href="/privacy">Privacy Policy</a></li>
       </ul>
     </div>
 
@@ -504,8 +663,8 @@
       <h4 class="font-semibold mb-4">For Customers</h4>
       <ul class="space-y-2 text-sm text-gray-600">
         <li>Categories near you</li>
-        <li>Reviews</li>
-        <li>Contact us</li>
+        <li><a href="/reviews">Reviews</a></li>
+        <li><a href="/contact">Contact us</a></li>
       </ul>
     </div>
 
@@ -513,7 +672,7 @@
     <div>
       <h4 class="font-semibold mb-4">For Professionals</h4>
       <ul class="space-y-2 text-sm text-gray-600">
-        <li>Register as a professional</li>
+        <li><a href="/register">Register as a professional</a></li>
       </ul>
     </div>
 
@@ -534,6 +693,9 @@
     © 2026 FixOraServices. All rights reserved.
   </div>
 </footer>
+<!-- Footer -->
+
+
 
 <!-- LOGIN MODAL -->
 <div
@@ -567,7 +729,7 @@
     </p>
 
     <!-- Phone Input -->
-    <form id="loginForm" action="/login" method="POST" class="space-y-4">
+    <form id="loginForm" method="POST" class="space-y-4">
       <div>
         <label class="block text-sm font-medium mb-1">
           Phone Number
@@ -577,6 +739,7 @@
             +91
           </span>
           <input
+            name="phone"
             type="tel"
             maxlength="10"
             placeholder="Enter 10 digit number"
@@ -587,12 +750,37 @@
       </div>
 
       <button
-        type="submit"
-        class="w-full py-2.5 bg-black text-white rounded-lg
-        hover:bg-gray-900 transition font-medium"
-      >
-        Continue
-      </button>
+  id="loginSubmitBtn"
+  type="submit"
+  class="w-full py-2.5 bg-black text-white rounded-lg
+         hover:bg-gray-900 transition font-medium
+         flex items-center justify-center gap-2"
+>
+  <span id="loginBtnText">Continue</span>
+
+  <!-- Spinner -->
+  <svg
+    id="loginSpinner"
+    class="hidden w-5 h-5 animate-spin text-white"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      class="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      stroke-width="4"
+    ></circle>
+    <path
+      class="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+    ></path>
+  </svg>
+</button>
     </form>
 
     <!-- Footer -->
@@ -604,91 +792,366 @@
   </div>
 </div>
 
-<!-- DROPDOWN SCRIPT -->
+
+<!-- OTP VERIFY MODAL -->
+<div
+  id="otpModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center"
+>
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+  <!-- Modal Box -->
+  <div
+    class="relative bg-white w-full max-w-md rounded-2xl shadow-xl p-6"
+  >
+    <!-- Close -->
+    <button
+      onclick="closeOtpModal()"
+      class="absolute top-4 right-4 text-gray-400 hover:text-black"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Header -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="p-2 bg-blue-100 rounded-lg">📱</div>
+      <h2 class="text-xl font-semibold">Enter verification code</h2>
+    </div>
+
+    <p class="text-sm text-gray-500 mb-6">
+      A 6-digit verification code has been sent to
+      <span class="font-medium" id="otpPhoneText"></span>
+    </p>
+
+    <!-- OTP INPUTS -->
+<div class="flex gap-3 justify-center mb-6">
+  <% for (let i = 0; i < 6; i++) { %>
+    <input
+      maxlength="1"
+      inputmode="numeric"
+      class="otp-input w-12 h-12 text-center border rounded-lg
+             text-lg font-semibold focus:ring-2 focus:ring-black
+             focus:outline-none"
+    />
+  <% } %>
+</div>
+
+
+
+    <!-- TIMER / RESEND -->
+    <div class="text-center text-sm text-gray-600 mb-4">
+      <span id="otpTimer">02:00</span>
+      <button
+  id="resendOtpBtn"
+  onclick="resendOtp()"
+  class="hidden text-blue-600 font-medium hover:underline"
+>
+  Resend OTP
+</button>
+    </div>
+
+    <!-- VERIFY -->
+    <button
+      onclick="verifyOtp()"
+      class="w-full py-2.5 bg-black text-white rounded-lg
+      hover:bg-gray-900 transition font-medium"
+    >
+      Verify & Login
+    </button>
+  </div>
+</div>
+
+
+<!-- VIDEO MODAL -->
+<div
+  id="videoModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center"
+>
+  <!-- Backdrop -->
+  <div
+    class="absolute inset-0 bg-black/70"
+    onclick="closeVideo()"
+  ></div>
+
+  <!-- Video Container -->
+  <div
+    class="relative z-10 w-full max-w-4xl px-4
+    max-h-[85vh] flex items-center justify-center"
+  >
+    <!-- Video Wrapper (keeps aspect ratio) -->
+    <div class="w-full aspect-video">
+      <video
+        id="videoPlayer"
+        controls
+        autoplay
+        class="w-full h-full rounded-2xl bg-black object-contain"
+      ></video>
+    </div>
+
+    <!-- Close Button -->
+    <button
+      onclick="closeVideo()"
+      class="absolute -top-12 right-6 text-white text-2xl
+      hover:opacity-80 transition"
+    >
+      ✕
+    </button>
+  </div>
+</div>
+
+
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Login modal
+  const loginModal = document.getElementById("loginModal");
+  const loginBox = document.getElementById("loginBox");
+  const openLoginBtn = document.getElementById("openLoginModal");
+  const closeLoginBtn = document.getElementById("closeLoginModal");
+  const loginBackdrop = document.getElementById("loginBackdrop");
+  const loginForm = document.getElementById("loginForm");
+
+  // Login loader
+  const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+  const loginBtnText = document.getElementById("loginBtnText");
+  const loginSpinner = document.getElementById("loginSpinner");
+
+  // OTP modal
+  const otpModal = document.getElementById("otpModal");
+  const otpPhoneText = document.getElementById("otpPhoneText");
+  const otpTimerEl = document.getElementById("otpTimer");
+  const resendOtpBtn = document.getElementById("resendOtpBtn");
+
+  // Profile dropdown
   const profileBtn = document.getElementById("profileBtn");
-  const dropdown = document.getElementById("profileDropdown");
+  const profileDropdown = document.getElementById("profileDropdown");
 
-  let isOpen = false;
+  // Video modal
+  const videoModal = document.getElementById("videoModal");
+  const videoPlayer = document.getElementById("videoPlayer");
 
-  profileBtn.addEventListener("click", (e) => {
+  let otpTimer = null;
+  let remainingSeconds = 120;
+  let currentPhone = "";
+  let dropdownOpen = false;
+
+
+
+  function openLoginModal() {
+    loginModal.classList.remove("hidden");
+    loginModal.classList.add("flex");
+
+    requestAnimationFrame(() => {
+      loginBox.classList.remove("translate-y-2", "opacity-0");
+      loginBox.classList.add("translate-y-0", "opacity-100");
+    });
+  }
+
+  function closeLoginModal() {
+    loginBox.classList.add("translate-y-2", "opacity-0");
+    loginBox.classList.remove("translate-y-0", "opacity-100");
+
+    setTimeout(() => {
+      loginModal.classList.add("hidden");
+      loginModal.classList.remove("flex");
+    }, 200);
+  }
+
+  openLoginBtn?.addEventListener("click", openLoginModal);
+  closeLoginBtn?.addEventListener("click", closeLoginModal);
+  loginBackdrop?.addEventListener("click", closeLoginModal);
+
+  function setLoginLoading(loading) {
+    loginSubmitBtn.disabled = loading;
+    loginBtnText.innerText = loading ? "Sending OTP…" : "Continue";
+    loginSpinner.classList.toggle("hidden", !loading);
+  }
+
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const phone = loginForm.phone.value.trim();
+    if (phone.length !== 10) {
+      showToast("error", "Enter valid phone number");
+      return;
+    }
+
+    setLoginLoading(true);
+
+    try {
+      const res = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      showToast("success", data.message);
+      closeLoginModal();
+      setTimeout(() => openOtpModal(phone), 250);
+
+    } catch (err) {
+      showToast("error", err.message || "Login failed");
+    } finally {
+      setLoginLoading(false);
+    }
+  });
+
+
+  function openOtpModal(phone) {
+    currentPhone = phone;
+    otpPhoneText.innerText = `+91 ${phone}`;
+
+    otpModal.classList.remove("hidden");
+    otpModal.classList.add("flex");
+
+    setupOtpInputs();
+    startOtpTimer();
+  }
+
+  // Close otp model
+  window.closeOtpModal = () => {
+    otpModal.classList.add("hidden");
+    otpModal.classList.remove("flex");
+    clearInterval(otpTimer);
+  };
+
+  function setupOtpInputs() {
+    const inputs = document.querySelectorAll(".otp-input");
+
+    inputs.forEach((input, i) => {
+      input.value = "";
+
+      input.oninput = () => {
+        input.value = input.value.replace(/\D/g, "");
+        if (input.value && i < inputs.length - 1) inputs[i + 1].focus();
+      };
+
+      input.onkeydown = (e) => {
+        if (e.key === "Backspace" && !input.value && i > 0) {
+          inputs[i - 1].focus();
+        }
+      };
+    });
+
+    inputs[0]?.focus();
+  }
+
+  // Start otp timer
+  function startOtpTimer() {
+    clearInterval(otpTimer);
+    remainingSeconds = 120;
+    resendOtpBtn.classList.add("hidden");
+
+    otpTimer = setInterval(() => {
+      remainingSeconds--;
+      const m = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
+      const s = String(remainingSeconds % 60).padStart(2, "0");
+      otpTimerEl.innerText = `${m}:${s}`;
+
+      if (remainingSeconds <= 0) {
+        clearInterval(otpTimer);
+        otpTimerEl.innerText = "";
+        resendOtpBtn.classList.remove("hidden");
+      }
+    }, 1000);
+  }
+
+  // Resend otp
+  window.resendOtp = async () => {
+    try {
+      const res = await fetch("/auth/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: currentPhone }),
+      });
+
+      if (!res.ok) throw new Error();
+      showToast("success", "OTP resent");
+      startOtpTimer();
+    } catch {
+      showToast("error", "Failed to resend OTP");
+    }
+  };
+
+  // Verify otp
+  window.verifyOtp = async () => {
+    const otp = [...document.querySelectorAll(".otp-input")]
+      .map(i => i.value)
+      .join("");
+
+    if (otp.length !== 6) {
+      showToast("error", "Enter valid OTP");
+      return;
+    }
+
+    try {
+      const res = await fetch("/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: currentPhone, otp }),
+      });
+
+      if (!res.ok) throw new Error();
+      location.reload();
+    } catch {
+      showToast("error", "Invalid OTP");
+    }
+  };
+
+  /* =======================
+     PROFILE DROPDOWN
+  ======================= */
+
+  profileBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleDropdown();
+    dropdownOpen = !dropdownOpen;
+
+    profileDropdown.classList.toggle("opacity-0", !dropdownOpen);
+    profileDropdown.classList.toggle("scale-95", !dropdownOpen);
+    profileDropdown.classList.toggle("pointer-events-none", !dropdownOpen);
   });
 
-  dropdown.addEventListener("click", (e) => {
-    e.stopPropagation(); // 🔥 THIS FIXES INSTANT CLOSE
+  document.addEventListener("click", () => {
+    dropdownOpen = false;
+    profileDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
   });
 
-  document.addEventListener("click", closeDropdown);
 
-  function toggleDropdown() {
-    isOpen ? closeDropdown() : openDropdown();
-  }
+  window.openVideo = (src) => {
+    videoPlayer.src = src;
+    videoModal.classList.remove("hidden");
+    videoModal.classList.add("flex");
+    videoPlayer.play();
+  };
 
-  function openDropdown() {
-    dropdown.classList.remove("opacity-0", "scale-95", "pointer-events-none");
-    dropdown.classList.add("opacity-100", "scale-100", "pointer-events-auto");
-    isOpen = true;
-  }
+  window.closeVideo = () => {
+    videoPlayer.pause();
+    videoPlayer.src = "";
+    videoModal.classList.add("hidden");
+    videoModal.classList.remove("flex");
+  };
 
-  function closeDropdown() {
-    dropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
-    dropdown.classList.remove("opacity-100", "scale-100", "pointer-events-auto");
-    isOpen = false;
-  }
-</script>
-
-<!-- LOGIN MODAL SCRIPT -->
-<script>
-  const openBtn = document.getElementById("openLoginModal");
-  const modal = document.getElementById("loginModal");
-  const box = document.getElementById("loginBox");
-  const closeBtn = document.getElementById("closeLoginModal");
-  const backdrop = document.getElementById("loginBackdrop");
-
-  function openModal() {
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
-
-  requestAnimationFrame(() => {
-    box.classList.remove("translate-y-2", "opacity-0");
-    box.classList.add("translate-y-0", "opacity-100");
-  });
-}
-
-function closeModal() {
-  box.classList.add("translate-y-2", "opacity-0");
-  box.classList.remove("translate-y-0", "opacity-100");
-
-  setTimeout(() => {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-  }, 200);
-}
-
-  openBtn.addEventListener("click", openModal);
-  closeBtn.addEventListener("click", closeModal);
-  backdrop.addEventListener("click", closeModal);
+  /* =======================
+     GLOBAL ESC HANDLER
+  ======================= */
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === "Escape") {
+      closeLoginModal();
+      closeOtpModal();
+      closeVideo();
+    }
   });
+
+});
 </script>
 
-<!-- APPLIANCE SLIDER SCRIPT -->
-<script>
-  const slider = document.getElementById("applianceSlider");
-  const nextBtn = document.getElementById("applianceNext");
-
-  nextBtn.addEventListener("click", () => {
-    slider.scrollBy({
-      left: 260,
-      behavior: "smooth",
-    });
-  });
-</script>
-
+<!-- Toast script -->
+<%- include("../partials/toast-script.ejs") %>
 </body>
 </html>
 

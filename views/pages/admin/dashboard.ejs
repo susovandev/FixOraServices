@@ -1,0 +1,40 @@
+<html>
+  <%- include('../../partials/head.ejs', { title: pageTitle || 'Service |Categories' }) %>
+
+  <body class="bg-gray-100 min-h-screen">
+    <%- include("../../partials/toast.ejs") %>
+
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <%- include('./components/sidebar.ejs') %>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- TOP BAR -->
+      <%- include('./components/main-header.ejs') %>
+
+      <!-- CONTENT -->
+      <main class="flex-1 p-6 space-y-6">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold text-gray-800">
+              <%= pageTitle %>
+            </h1>
+            <p class="text-sm text-gray-500">
+              <%= pageDesc %>
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <%- include('./components/footer.ejs') %>
+    </div>
+  </div>
+  <%- include('../../partials/toast-script.ejs') %>
+  </body>
+
+</html>

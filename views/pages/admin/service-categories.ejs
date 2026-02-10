@@ -1,0 +1,346 @@
+<html>
+  <%- include('../../partials/head.ejs', { title: pageTitle || 'Service |Categories' }) %>
+
+  <body class="bg-gray-50 min-h-screen">
+    <%- include("../../partials/toast.ejs") %>
+
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <%- include('./components/sidebar.ejs') %>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- TOP BAR -->
+      <%- include('./components/main-header.ejs') %>
+
+      <!-- CONTENT -->
+      <main class="flex-1 p-6 space-y-6">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold text-slate-800">
+              Service Categories
+            </h1>
+            <p class="text-sm text-slate-500">
+              Manage service groups and availability
+            </p>
+          </div>
+
+          <button
+             data-open-modal="create-service-category"             class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold
+             shadow-sm hover:bg-indigo-700 transition flex items-center gap-2"
+          >
+            <i class="fa-solid fa-layer-group"></i>
+            New Category
+          </button>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div  class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-visible">
+
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-slate-600">
+              <tr>
+                <th class="px-6 py-4 text-left">Category</th>
+                <th class="px-6 py-4 text-left">Icon</th>
+                <th class="px-6 py-4 text-left">Total Services</th>
+                <th class="px-6 py-4 text-left">Status</th>
+                <th class="px-6 py-4 text-left">Created</th>
+                <th class="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y">
+
+            <% if (!serviceCategories.length) { %>
+              <!-- EMPTY -->
+              <tr>
+                <td colspan="6" class="px-6 py-20 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                      <i class="fa-solid fa-layer-group text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">
+                      No service categories
+                    </h3>
+                    <p class="text-sm text-gray-500 max-w-md">
+                      Create categories to group your services and manage pricing easily.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            <% } else { %>
+
+              <% serviceCategories.forEach(cat => { %>
+                <tr class="hover:bg-gray-50/70 transition">
+
+                  <!-- NAME -->
+                  <td class="px-6 py-4 font-medium text-slate-800">
+                    <%= cat.name %>
+                  </td>
+
+                  <!-- ICON -->
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium">
+                      <i class="<%= cat.icon %>"></i>
+                      <%= cat.icon %>
+                    </span>
+                  </td>
+
+                  <!-- SERVICE COUNT -->
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-1 px-3 py-1
+             text-xs rounded-full bg-indigo-100/70
+             text-indigo-700 font-semibold">
+                      <%= cat.servicesCount || 0 %> Services
+                    </span>
+                  </td>
+
+                  <!-- STATUS -->
+                  <td class="px-6 py-4">
+                    <% if (cat.isActive) { %>
+                      <span class="inline-flex items-center gap-2 px-3 py-1 text-xs
+             bg-emerald-100/70 text-emerald-700
+             rounded-full font-semibold">
+                        ● Active
+                      </span>
+                    <% } else { %>
+                      <span class="inline-flex items-center gap-2 px-3 py-1 text-xs
+             bg-rose-100/70 text-rose-700
+             rounded-full font-semibold">
+                        ● Disabled
+                      </span>
+                    <% } %>
+                  </td>
+
+                  <!-- CREATED -->
+                  <td class="px-6 py-4 text-slate-500">
+                    <%= new Date(cat.createdAt).toDateString() %>
+                  </td>
+
+                  <!-- ACTIONS -->
+                  <td class="px-6 py-4 text-right">
+  <div class="relative inline-block text-left">
+    <button
+      class="p-2 rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition"
+      onclick="toggleActionMenu('<%= cat._id %>')"
+    >
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+    </button>
+
+    <div
+      id="actions-<%= cat._id %>"
+      class="hidden absolute right-0 mt-2 w-40
+             bg-white border border-gray-200
+             rounded-xl shadow-xl z-999 overflow-hidden"
+    >
+      <!-- EDIT -->
+      <button
+        class="w-full px-4 py-2.5 text-sm text-left
+               text-slate-700 hover:bg-slate-100 transition
+               edit-category-btn"
+        data-id="<%= cat._id %>"
+        data-name="<%= cat.name %>"
+        data-icon="<%= cat.icon %>"
+      >
+        ✏️ Edit
+      </button>
+
+      <!-- TOGGLE -->
+      <form
+        action="/admin/service-categories/<%= cat._id %>/toggle?_method=PUT"
+        method="POST"
+      >
+        <button
+          class="w-full px-4 py-2.5 text-sm text-left transition
+            <%= cat.isActive
+              ? 'text-rose-600 hover:bg-rose-50'
+              : 'text-emerald-600 hover:bg-emerald-50' %>"
+        >
+          <%= cat.isActive ? 'Disable' : 'Enable' %>
+        </button>
+      </form>
+
+      <!-- DELETE -->
+      <form
+        action="/admin/service-categories/<%= cat._id %>?_method=DELETE"
+        method="POST"
+      >
+        <button
+          class="w-full px-4 py-2.5 text-sm text-left
+                 text-rose-600 hover:bg-rose-50 transition"
+        >
+          🗑 Delete
+        </button>
+      </form>
+    </div>
+  </div>
+</td>
+
+
+                </tr>
+              <% }) %>
+
+            <% } %>
+            </tbody>
+          </table>
+        </div>
+
+      </main>
+
+      <%- include('./components/footer.ejs') %>
+    </div>
+  </div>
+
+  <!-- CREATE MODAL -->
+  <div
+    id="create-service-category-modal"
+    class="modal fixed inset-0 hidden items-center justify-center bg-black/50 backdrop-blur-sm z-50"
+  >
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl border border-gray-200">
+      <h3 class="text-lg font-semibold mb-4">Create Service Category</h3>
+
+      <form action="/admin/service-categories" method="POST" class="space-y-4">
+        <input
+          name="name"
+          required
+          placeholder="Category name"
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-300
+       focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        />
+        <input
+          name="icon"
+          required
+          placeholder="FontAwesome icon class (fa-solid fa-wrench)"
+          class="w-full px-4 py-2.5 rounded-xl border focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <div class="flex justify-end gap-3 pt-3">
+          <button data-close-modal type="button" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50">
+            Cancel
+          </button>
+          <button class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700">
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div
+    id="editCategoryModal"
+    class="fixed inset-0 hidden flex items-center justify-center bg-black/40 z-50"
+  >
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
+      <h3 class="text-lg font-semibold mb-4">Update Service Category</h3>
+
+      <form id="editCategoryForm" method="POST" class="space-y-4">
+        <input type="hidden" name="_method" value="PUT" />
+
+        <input
+          id="editName"
+          name="name"
+          required
+          class="w-full px-4 py-2.5 rounded-xl border"
+        />
+
+        <input
+          id="editIcon"
+          name="icon"
+          required
+          class="w-full px-4 py-2.5 rounded-xl border"
+        />
+
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" onclick="closeEditModal()" class="px-4 py-2 border rounded-lg">
+            Cancel
+          </button>
+          <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg">
+            Update
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // OPEN MODAL
+  document.querySelectorAll('[data-open-modal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modalId = btn.dataset.openModal + '-modal';
+      const modal = document.getElementById(modalId);
+
+      if (!modal) {
+        console.error('Modal not found:', modalId);
+        return;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+  });
+
+  // CLOSE MODAL
+  document.querySelectorAll('[data-close-modal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modal = btn.closest('.modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+  });
+
+  // CLICK OUTSIDE TO CLOSE
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+  });
+
+  // EDIT MODAL
+    document.querySelectorAll('.edit-category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('editName').value = btn.dataset.name;
+        document.getElementById('editIcon').value = btn.dataset.icon;
+        document.getElementById('editCategoryForm').action =
+          `/admin/service-categories/${btn.dataset.id}?_method=PUT`;
+        document.getElementById('editCategoryModal').classList.remove('hidden');
+      });
+    });
+
+    // CLOSE EDIT MODAL
+    function closeEditModal() {
+      document.getElementById('editCategoryModal').classList.add('hidden');
+    }
+  </script>
+  <script>
+  function toggleActionMenu(id) {
+    document.querySelectorAll('[id^="actions-"]').forEach(m => {
+      if (m.id !== `actions-${id}`) m.classList.add('hidden');
+    });
+
+    document
+      .getElementById(`actions-${id}`)
+      .classList.toggle('hidden');
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('[onclick^="toggleActionMenu"]')) {
+      document
+        .querySelectorAll('[id^="actions-"]')
+        .forEach(m => m.classList.add('hidden'));
+    }
+  });
+</script>
+
+
+  <%- include('../../partials/toast-script.ejs') %>
+  </body>
+
+</html>
