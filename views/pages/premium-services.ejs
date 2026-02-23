@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Premium Services | FixOra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+          radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.08), transparent 40%), #f8fafc;
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-800">
+    <%- include("../partials/toast.ejs") %>
+    <!-- HEADER INCLUDE -->
+    <%- include("../partials/client/header.ejs") %>
+
+    <!-- HERO -->
+    <section class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+      <div
+        class="rounded-3xl p-8 md:p-12 bg-slate-900 text-white shadow-xl relative overflow-hidden"
+      >
+        <div class="relative z-10">
+          <h1 class="text-3xl md:text-4xl font-semibold">Premium Services</h1>
+
+          <p class="mt-3 text-slate-100 max-w-xl">
+            Top-rated professionals, priority booking, faster service, and guaranteed quality —
+            curated for the best experience.
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-3 text-sm">
+            <span class="bg-white/20 px-4 py-1.5 rounded-full"> ⭐ Verified Experts </span>
+
+            <span class="bg-white/20 px-4 py-1.5 rounded-full"> ⚡ Priority Booking </span>
+
+            <span class="bg-white/20 px-4 py-1.5 rounded-full"> 🛡 Service Warranty </span>
+          </div>
+        </div>
+
+        <div class="absolute -right-20 -top-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+      </div>
+    </section>
+
+    <!-- PREMIUM SUBSCRIPTIONS -->
+    <section class="max-w-7xl mx-auto px-6 pb-16">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-semibold">Premium Service Plans</h2>
+        <p class="text-slate-500 mt-2">Choose the plan that fits your home needs</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- 1 MONTH -->
+        <div class="bg-white border rounded-3xl p-8 shadow-sm hover:shadow-xl transition">
+          <span class="text-xs font-semibold px-3 py-1 bg-slate-50 text-slate-600 rounded-full">
+            Starter
+          </span>
+
+          <h3 class="text-2xl font-semibold mt-4">1 Month</h3>
+
+          <p class="text-slate-500 mt-2 text-sm">Limited service coverage for quick needs</p>
+
+          <div class="text-4xl font-bold text-slate-900 mt-6">
+            ₹<%= plans?.month1?.price || 999 %>
+          </div>
+
+          <ul class="mt-6 space-y-3 text-sm text-slate-600">
+            <li>✔ Limited service requests</li>
+            <li>✔ Standard response time</li>
+            <li>✔ Basic support</li>
+          </ul>
+
+          <form action="/premium/subscribe" method="POST">
+            <input type="hidden" name="plan" value="1month" />
+            <button
+              class="w-full mt-8 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-600 transition"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+        <!-- 6 MONTHS (POPULAR) -->
+        <div class="bg-white border-2 border-slate-600 rounded-3xl p-8 shadow-xl relative">
+          <span
+            class="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 bg-slate-900 text-white rounded-full shadow"
+          >
+            MOST POPULAR
+          </span>
+
+          <h3 class="text-2xl font-semibold mt-4">6 Months</h3>
+
+          <p class="text-slate-500 mt-2 text-sm">More services with faster resolution</p>
+
+          <div class="text-4xl font-bold text-slate-900 mt-6">
+            ₹<%= plans?.month6?.price || 4999 %>
+          </div>
+
+          <ul class="mt-6 space-y-3 text-sm text-slate-600">
+            <li>✔ More service requests</li>
+            <li>✔ Priority technician</li>
+            <li>✔ Faster booking slots</li>
+            <li>✔ Premium support</li>
+          </ul>
+
+          <form action="/premium/subscribe" method="POST">
+            <input type="hidden" name="plan" value="6month" />
+            <button
+              class="w-full mt-8 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-700 transition"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+        <!-- 12 MONTHS (BEST) -->
+        <div
+          class="bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-3xl p-8 shadow-xl"
+        >
+          <span class="text-xs font-semibold px-3 py-1 bg-white/20 rounded-full"> BEST VALUE </span>
+
+          <h3 class="text-2xl font-semibold mt-4">12 Months</h3>
+
+          <p class="text-slate-100 mt-2 text-sm">
+            Unlimited services with 1-hour priority solution
+          </p>
+
+          <div class="text-4xl font-bold mt-6">₹<%= plans?.month12?.price || 8999 %></div>
+
+          <ul class="mt-6 space-y-3 text-sm">
+            <li>✔ Unlimited service requests</li>
+            <li>✔ 1-hour priority resolution</li>
+            <li>✔ Dedicated technician support</li>
+            <li>✔ VIP customer care</li>
+            <li>✔ All services included</li>
+          </ul>
+
+          <form action="/premium/subscribe" method="POST">
+            <input type="hidden" name="plan" value="12month" />
+            <button
+              class="w-full mt-8 py-3 bg-white text-slate-700 rounded-xl hover:bg-slate-50 transition font-semibold"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <%- include("../partials/client/footer.ejs") %> <%-
+    include("../partials/client/profile-script.ejs") %> <%- include("../partials/toast-script.ejs")
+    %>
+  </body>
+</html>

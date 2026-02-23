@@ -7,7 +7,13 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@config/*": ["config/*"],
+      "@modules/*": ["modules/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@utils/*": ["utils/*"],
+      "@libs/*": ["libs/*"],
+      "@jobs/*": ["jobs/*"],
+      "@types/*": ["types/*"]
     },
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "strict": true,

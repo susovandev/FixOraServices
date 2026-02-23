@@ -1,0 +1,39 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const locationText = document.getElementById('location-text');
+
+    if (!navigator.geolocation) {
+      locationText.innerText = 'Location not supported';
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async function (position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        try {
+          // Reverse Geocoding using OpenStreetMap (Free)
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+          );
+          const data = await response.json();
+
+          console.log(data);
+
+          const city =
+            data.address.city || data.address.town || data.address.village || 'Unknown location';
+
+          const state = data.address.state || '';
+
+          locationText.innerText = `${city}, ${state}`;
+        } catch (error) {
+          locationText.innerText = 'Location unavailable';
+        }
+      },
+      function (error) {
+        locationText.innerText = 'Permission denied';
+      }
+    );
+  });
+</script>

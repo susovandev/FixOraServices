@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Technician Dashboard | FixOra</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 10%, rgba(99,102,241,.08), transparent 40%),
+radial-gradient(circle at 90% 0%, rgba(16,185,129,.08), transparent 40%),
+#f8fafc;
+}
+.glass{
+background: rgba(255,255,255,.75);
+backdrop-filter: blur(12px);
+}
+</style>
+
+</head>
+
+<body class="text-slate-800">
+  <%- include('../../partials/toast.ejs') %>
+<div class="flex min-h-screen">
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="hidden md:flex w-72 flex-col p-6">
+
+<div class="glass rounded-3xl shadow-xl border border-white p-6 h-full flex flex-col">
+
+<h1 class="text-2xl font-semibold text-slate-600 mb-10">FixOra</h1>
+
+<nav class="space-y-2 flex-1 text-sm">
+
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-50 text-slate-600 font-medium">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100">
+<i class="fa-solid fa-calendar-check"></i> Bookings
+</a>
+
+<a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100">
+<i class="fa-solid fa-wallet"></i> Earnings
+</a>
+
+<a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100">
+<i class="fa-solid fa-star"></i> Reviews
+</a>
+
+<a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100">
+<i class="fa-solid fa-user-gear"></i> Account Settings
+</a>
+
+</nav>
+
+<a href="/logout" class="bg-slate-900 text-white py-3 rounded-xl text-center">
+Logout
+</a>
+
+</div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+
+<div class="flex-1 flex flex-col">
+
+<!-- ===== TOP BAR ===== -->
+
+<header class="glass border-b border-white px-8 py-5 flex justify-between items-center">
+
+<h1 class="text-xl font-semibold">Dashboard</h1>
+
+<div class="flex items-center gap-6">
+
+<button class="relative text-xl">
+<i class="fa-solid fa-bell"></i>
+<span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">3</span>
+</button>
+
+<div class="flex items-center gap-3">
+<img src="https://i.pravatar.cc/40" class="w-9 h-9 rounded-full border"/>
+<span class="hidden sm:block font-medium"><%= technician?.name || "Technician" %></span>
+</div>
+
+</div>
+
+</header>
+
+<!-- ===== CONTENT ===== -->
+
+<main class="flex-1 overflow-y-auto p-8 space-y-8">
+
+<!-- ===== STAT CARDS ===== -->
+
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+<div class="glass p-6 rounded-3xl shadow-sm border border-white">
+<p class="text-slate-500 text-sm">Pending Bookings</p>
+<h2 class="text-3xl font-semibold mt-1"><%= stats.pending %></h2>
+</div>
+
+<div class="glass p-6 rounded-3xl shadow-sm border border-white">
+<p class="text-slate-500 text-sm">Completed Jobs</p>
+<h2 class="text-3xl font-semibold mt-1"><%= stats.completed %></h2>
+</div>
+
+<div class="glass p-6 rounded-3xl shadow-sm border border-white">
+<p class="text-slate-500 text-sm">Average Rating</p>
+<h2 class="text-3xl font-semibold mt-1"><%= stats.rating %> ★</h2>
+</div>
+
+<div class="glass p-6 rounded-3xl shadow-sm border border-white">
+<p class="text-slate-500 text-sm">Earnings This Month</p>
+<h2 class="text-3xl font-semibold mt-1">₹<%= stats.earnings %></h2>
+</div>
+
+</section>
+
+<!-- ===== BOOKINGS TABLE ===== -->
+
+<section class="glass rounded-3xl shadow-sm border border-white overflow-hidden">
+
+<div class="p-6 border-b font-semibold">Bookings</div>
+
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+
+<thead class="bg-slate-50 text-slate-500">
+<tr>
+<th class="p-4">Customer</th>
+<th class="p-4">Service</th>
+<th class="p-4">Date</th>
+<th class="p-4">Status</th>
+<th class="p-4">Action</th>
+</tr>
+</thead>
+
+<tbody class="divide-y">
+
+<% bookings.forEach(b => { %>
+
+<tr class="hover:bg-slate-50">
+
+<td class="p-4 font-medium"><%= b.customer %></td>
+<td class="p-4"><%= b.service %></td>
+<td class="p-4"><%= b.date %></td>
+
+<td class="p-4">
+<span class="px-3 py-1 text-xs rounded-full font-medium
+<%= b.status==='Completed' ? 'bg-emerald-100 text-emerald-700' : '' %>
+<%= b.status==='Pending' ? 'bg-amber-100 text-amber-700' : '' %>">
+<%= b.status %>
+</span>
+</td>
+
+<td class="p-4">
+<a href="/bookings/<%= b._id %>" class="text-slate-600 font-medium hover:underline">
+View
+</a>
+</td>
+
+</tr>
+<% }) %>
+
+</tbody>
+</table>
+</div>
+
+</section>
+
+<!-- ===== LOWER GRID ===== -->
+
+<section class="grid lg:grid-cols-2 gap-6">
+
+<!-- REVIEWS -->
+
+<div class="glass rounded-3xl border border-white shadow-sm">
+
+<div class="p-6 border-b font-semibold">Recent Reviews</div>
+
+<div class="p-6 space-y-4">
+
+<% reviews.forEach(r => { %>
+
+<div class="border rounded-2xl p-4 bg-white/60">
+<div class="font-medium"><%= r.rating %> ★</div>
+<p class="text-slate-600 text-sm"><%= r.comment %></p>
+<div class="text-xs text-slate-400 mt-1"><%= r.date %></div>
+</div>
+<% }) %>
+
+</div>
+</div>
+
+<!-- ACCOUNT STATUS -->
+
+<div class="glass rounded-3xl border border-white shadow-sm">
+
+<div class="p-6 border-b font-semibold">Account Status</div>
+
+<div class="p-6 space-y-4">
+
+<div class="flex justify-between items-center border rounded-2xl p-4 bg-white/60">
+<span>KYC Verified</span>
+<span class="font-semibold <%= account.kyc ? 'text-emerald-600' : 'text-amber-500' %>">
+<%= account.kyc ? 'Verified' : 'Pending' %>
+</span>
+</div>
+
+<div class="flex justify-between items-center border rounded-2xl p-4 bg-white/60">
+<span>Bank Verified</span>
+<span class="font-semibold <%= account.bank ? 'text-emerald-600' : 'text-amber-500' %>">
+<%= account.bank ? 'Verified' : 'Pending' %>
+</span>
+</div>
+
+</div>
+</div>
+
+</section>
+
+</main>
+</div>
+
+</div>
+  <%- include('../../partials/toast-script.ejs') %>
+</body>
+</html>

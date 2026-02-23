@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Verify OTP | FixOra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{
+  background:
+  radial-gradient(circle at 10% 10%, rgba(16,185,129,.08), transparent 40%),
+  radial-gradient(circle at 90% 90%, rgba(59,130,246,.05), transparent 40%),
+  #f8fafc;
+}
+</style>
+
+</head>
+
+<body class="min-h-screen flex items-center justify-center px-6">
+  <%- include('../../partials/toast.ejs') %>
+
+<div class="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-2xl p-10">
+
+<!-- LOGO / BRAND -->
+<div class="text-center mb-8">
+<h1 class="text-2xl font-semibold text-slate-900">Verify your phone</h1>
+<p class="text-sm text-gray-500 mt-2">
+Enter the 6-digit code sent to  
+<span class="font-medium text-slate-700">+91 <%= phone %></span>
+</p>
+</div>
+
+
+<!-- OTP FORM -->
+<form action="/verify-otp" method="POST" class="space-y-6">
+
+<input type="hidden" name="phone" value="<%= phone %>">
+
+<!-- OTP BOXES -->
+<div class="flex justify-between gap-3">
+
+<% for(let i=0;i<6;i++){ %>
+<input
+type="text"
+maxlength="1"
+inputmode="numeric"
+pattern="[0-9]*"
+name="otp[]"
+required
+class="otp-input w-12 h-14 text-center text-xl font-semibold
+border border-gray-300 rounded-xl
+focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600
+outline-none transition"
+/>
+<% } %>
+
+</div>
+
+<!-- VERIFY BUTTON -->
+<button type="submit"
+class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800
+text-white font-medium transition shadow-lg">
+Verify OTP
+</button>
+
+</form>
+
+<!-- RESEND -->
+<div class="text-center mt-6 text-sm text-gray-500">
+
+<span id="timerText">
+Resend code in <span id="timer">60</span>s
+</span>
+
+<form action="/resend-otp" method="POST" class="inline">
+<input type="hidden" name="phone" value="<%= phone %>">
+
+<button id="resendBtn"
+class="hidden text-emerald-600 font-medium hover:underline">
+Resend OTP
+</button>
+</form>
+</div>
+
+</div>
+
+
+<!-- SCRIPT -->
+<script>
+
+const inputs = document.querySelectorAll('.otp-input');
+
+
+inputs.forEach((input, index)=>{
+input.addEventListener('input', e=>{
+if(e.target.value.length === 1 && index < inputs.length-1){
+inputs[index+1].focus();
+}
+});
+
+
+input.addEventListener('keydown', e=>{
+if(e.key === "Backspace" && !input.value && index>0){
+inputs[index-1].focus();
+}
+});
+});
+
+
+inputs[0].addEventListener('paste', e=>{
+let paste = (e.clipboardData || window.clipboardData).getData('text');
+if(paste.length===6){
+inputs.forEach((box,i)=> box.value = paste[i] || '');
+}
+});
+
+
+let time=60;
+const timerEl=document.getElementById('timer');
+const resendBtn=document.getElementById('resendBtn');
+const timerText=document.getElementById('timerText');
+
+const countdown=setInterval(()=>{
+time--;
+timerEl.textContent=time;
+
+if(time<=0){
+clearInterval(countdown);
+timerText.classList.add('hidden');
+resendBtn.classList.remove('hidden');
+}
+},1000);
+
+</script>
+
+  <%- include("../../partials/toast-script.ejs") %>
+</body>
+</html>

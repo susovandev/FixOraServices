@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Contact Us | FixOra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-slate-50 text-slate-800">
+    <%- include("../partials/toast.ejs") %> <%- include("../partials/client/header.ejs") %>
+
+    <section class="max-w-7xl mx-auto px-6 py-12">
+      <!-- TITLE -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-semibold">Contact Our Team</h1>
+        <p class="text-slate-500 mt-2">We usually respond within a few hours</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10">
+        <!-- CONTACT FORM -->
+        <div class="bg-white border rounded-3xl p-8 shadow-sm">
+          <form action="/contact" method="POST" class="space-y-5">
+            <div>
+              <label class="text-sm font-medium">Name</label>
+              <input
+                name="name"
+                required
+                class="mt-1 w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-slate-600 outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="text-sm font-medium">Email</label>
+              <input
+                type="email"
+                name="email"
+                required
+                class="mt-1 w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-slate-600 outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="text-sm font-medium">Subject</label>
+              <input
+                name="subject"
+                class="mt-1 w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-slate-600 outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="text-sm font-medium">Message</label>
+              <textarea
+                name="message"
+                rows="5"
+                required
+                class="mt-1 w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-slate-600 outline-none"
+              ></textarea>
+            </div>
+
+            <button
+              class="w-full py-3 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-700 transition"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+
+        <!-- CONTACT INFO -->
+        <div class="space-y-6">
+          <div class="bg-white border rounded-3xl p-6 flex gap-4 items-start">
+            <i class="fa-solid fa-headset text-slate-600 text-xl mt-1"></i>
+            <div>
+              <h3 class="font-semibold">Customer Support</h3>
+              <p class="text-sm text-slate-500">support@fixora.com</p>
+            </div>
+          </div>
+
+          <div class="bg-white border rounded-3xl p-6 flex gap-4 items-start">
+            <i class="fa-solid fa-phone text-slate-600 text-xl mt-1"></i>
+            <div>
+              <h3 class="font-semibold">Phone</h3>
+              <p class="text-sm text-slate-500">+91 90000 00000</p>
+            </div>
+          </div>
+
+          <div class="bg-white border rounded-3xl p-6 flex gap-4 items-start">
+            <i class="fa-solid fa-location-dot text-slate-600 text-xl mt-1"></i>
+            <div>
+              <h3 class="font-semibold">Office</h3>
+              <p class="text-sm text-slate-500">India • Available nationwide</p>
+            </div>
+          </div>
+
+          <!-- LIVE CHAT CTA -->
+          <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-lg">
+            <h3 class="font-semibold text-lg">Need instant help?</h3>
+            <p class="text-slate-100 text-sm mt-1">Chat with our team now.</p>
+
+            <a
+              href="/chat"
+              class="inline-block mt-4 px-5 py-2 bg-neutral-200 text-black rounded-xl font-medium hover:bg-slate-50 transition"
+            >
+              Start Live Chat
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <%- include("../partials/client/footer.ejs") %> <%-
+    include("../partials/client/profile-script.ejs") %> <%- include("../partials/toast-script.ejs")
+    %>
+  </body>
+</html>

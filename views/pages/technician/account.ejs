@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FixOra Technician Account</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08), transparent 40%),
+          radial-gradient(circle at 90% 0%, rgba(99, 102, 241, 0.08), transparent 40%), #f8fafc;
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-800">
+    <%- include('../../partials/toast.ejs') %>
+    <div class="flex min-h-screen">
+      <!-- SIDEBAR -->
+      <aside class="w-64 bg-white border-r border-slate-200 p-6 hidden md:flex flex-col">
+        <h2 class="text-2xl font-semibold text-slate-600 mb-10">FixOra</h2>
+
+        <nav class="space-y-4 text-sm flex-1">
+          <a
+            href="/technician/dashboard"
+            class="flex gap-3 items-center text-slate-600 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+          </a>
+
+          <a
+            href="/technician/bookings"
+            class="flex gap-3 items-center text-slate-600 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-calendar-check"></i> Bookings
+          </a>
+
+          <a
+            href="/technician/earnings"
+            class="flex gap-3 items-center text-slate-600 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-wallet"></i> Earnings
+          </a>
+
+          <a
+            href="/technician/reviews"
+            class="flex gap-3 items-center text-slate-600 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-star"></i> Reviews
+          </a>
+
+          <a class="flex gap-3 items-center font-medium text-slate-600">
+            <i class="fa-solid fa-user"></i> Account
+          </a>
+        </nav>
+
+        <form action="/technician/logout" method="POST">
+          <button class="w-full mt-6 bg-slate-900 text-white py-2 rounded-lg">Logout</button>
+        </form>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="flex-1">
+        <!-- TOPBAR -->
+        <header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+          <h1 class="text-xl font-semibold">Account Settings</h1>
+
+          <img
+            src="<%= technician.profilePhoto?.url || 'https://i.pravatar.cc/40' %>"
+            class="w-9 h-9 rounded-full"
+          />
+        </header>
+
+        <div class="p-6 space-y-8">
+          <!-- PROFILE CARD -->
+          <form
+            action="/technician/account/update"
+            method="POST"
+            enctype="multipart/form-data"
+            class="bg-white border rounded-2xl p-8 space-y-6"
+          >
+            <h2 class="font-semibold text-lg">Profile Information</h2>
+
+            <div class="flex items-center gap-6">
+              <img
+                src="<%= technician.profilePhoto?.url || 'https://i.pravatar.cc/100' %>"
+                class="w-20 h-20 rounded-full border"
+              />
+
+              <div>
+                <label class="text-sm text-slate-500">Change Photo</label>
+                <input type="file" name="profilePhoto" class="block mt-1 text-sm" />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="text-sm text-slate-500">Full Name</label>
+                <input
+                  name="name"
+                  value="<%= technician.name %>"
+                  class="w-full mt-1 border rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label class="text-sm text-slate-500">Phone</label>
+                <input
+                  value="<%= technician.phone %>"
+                  disabled
+                  class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-100"
+                />
+              </div>
+
+              <div>
+                <label class="text-sm text-slate-500">Email</label>
+                <input
+                  name="email"
+                  value="<%= technician.email %>"
+                  class="w-full mt-1 border rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label class="text-sm text-slate-500">Service Category</label>
+                <input
+                  name="service"
+                  value="<%= technician.service %>"
+                  class="w-full mt-1 border rounded-lg px-3 py-2"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm text-slate-500">Address</label>
+              <textarea name="address" class="w-full mt-1 border rounded-lg px-3 py-2">
+<%= technician.address %></textarea
+              >
+            </div>
+
+            <button class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-2 rounded-lg">
+              Save Changes
+            </button>
+          </form>
+
+          <!-- SECURITY -->
+          <form
+            action="/technician/account/password"
+            method="POST"
+            class="bg-white border rounded-2xl p-8 space-y-6"
+          >
+            <h2 class="font-semibold text-lg">Change Password</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+              <input
+                type="password"
+                name="currentPassword"
+                placeholder="Current Password"
+                class="border rounded-lg px-3 py-2"
+              />
+
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="New Password"
+                class="border rounded-lg px-3 py-2"
+              />
+
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                class="border rounded-lg px-3 py-2"
+              />
+            </div>
+
+            <button class="bg-slate-900 text-white px-6 py-2 rounded-lg">Update Password</button>
+          </form>
+
+          <!-- VERIFICATION STATUS -->
+          <div class="bg-white border rounded-2xl p-8 space-y-4">
+            <h2 class="font-semibold text-lg">Verification Status</h2>
+
+            <div class="flex justify-between border rounded-lg p-4">
+              <span>KYC Verification</span>
+              <span
+                class="font-medium <%= technician.kycVerified ? 'text-green-600' : 'text-red-500' %>"
+              >
+                <%= technician.kycVerified ? 'Verified' : 'Pending' %>
+              </span>
+            </div>
+
+            <div class="flex justify-between border rounded-lg p-4">
+              <span>Bank Account</span>
+              <span
+                class="font-medium <%= technician.bankVerified ? 'text-green-600' : 'text-red-500' %>"
+              >
+                <%= technician.bankVerified ? 'Verified' : 'Pending' %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <%- include('../../partials/toast-script.ejs') %>
+  </body>
+</html>

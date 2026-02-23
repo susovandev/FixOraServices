@@ -1,106 +1,186 @@
-/*
-{
-  _id,
-  name,
-  phone,
-  email?,
-  profileImage,
-  kyc: {
-    idType,
-    idNumber,
-    documents: [url],
-    verified: boolean
-  },
-  status: 'PENDING' | 'APPROVED' | 'SUSPENDED',
-  serviceRadiusKm,
-  location: {
-    type: 'Point',
-    coordinates: [lng, lat]
-  },
-  rating: {
-    avg,
-    count
-  },
-  availability: {
-    online: boolean,
-    workingHours
-  },
-  createdAt,
-  updatedAt
+import type { Document, Types } from 'mongoose';
+import { Schema, model } from 'mongoose';
+
+export interface IImageShape {
+  publicId: string;
+  url: string;
 }
-*/
 
-import { Schema, type Document, model } from 'mongoose';
+export enum TechnicianVerificationStatus {
+  PENDING = 'pending',
+  VERIFIED = 'verified',
+  REJECTED = 'rejected',
+}
 
-export enum TechnicianStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  SUSPENDED = 'SUSPENDED',
+export enum TechnicianWorkingDays {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
+export interface ITechnicianBasicInfoDocument {
+  fullName: string;
+  phone: string;
+  email?: string;
+  profilePhoto: IImageShape;
+}
+
+export interface ITechnicianLocationDocument {
+  state: Types.ObjectId;
+  city: Types.ObjectId;
+  address: {
+    line1: string;
+    area: string;
+    pincode: string;
+  };
+  location: {
+    type: string;
+    coordinates: [number, number];
+  };
+  serviceRadiusKm: number;
+}
+
+export interface ITechnicianServicesDocument {
+  services: Types.ObjectId[];
+  experienceYears: number;
+  languages: string[];
+  availability: {
+    workingDays: TechnicianWorkingDays[];
+    startTime: string;
+    endTime: string;
+  };
 }
 
 export interface ITechnicianDocument extends Document {
-  name: string;
-  phone: string;
-  email?: string;
-  profileImage: string;
-  kyc: {
-    idType: string;
-    idNumber: string;
-    documents: string[];
-    verified: boolean;
-  };
-  status: TechnicianStatus;
-  serviceRadiusKm: number;
-  location: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  rating: {
-    avg: number;
-    count: number;
-  };
-  availability: {
-    online: boolean;
-    workingHours: string[];
-  };
-  createdAt: Date;
-  updatedAt: Date;
+  basicInfo: ITechnicianBasicInfoDocument;
+  location: ITechnicianLocationDocument;
+  services: ITechnicianServicesDocument;
+  rating: number;
+  totalJobsCompleted: number;
+  totalEarnings: number;
+  technicianVerificationStatus: TechnicianVerificationStatus;
+  isPhoneVerified: boolean;
+  isActive: boolean;
+  isBlocked: boolean;
 }
+
+const imageSchema = new Schema<IImageShape>(
+  {
+    publicId: String,
+    url: String,
+  },
+  { _id: false }
+);
+
+const technicianBasicInfoSchema = new Schema<ITechnicianBasicInfoDocument>(
+  {
+    fullName: {
+      type: String,
+    },
+    phone: { type: String },
+    email: { type: String, unique: true, sparse: true },
+    profilePhoto: {
+      type: imageSchema,
+    },
+  },
+  { versionKey: false, _id: false }
+);
+
+const technicianLocationSchema = new Schema<ITechnicianLocationDocument>(
+  {
+    state: {
+      type: Schema.Types.ObjectId,
+      ref: 'State',
+      index: true,
+    },
+
+    city: {
+      type: Schema.Types.ObjectId,
+      ref: 'City',
+      index: true,
+    },
+
+    address: {
+      line1: String,
+      area: String,
+      pincode: String,
+    },
+
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number],
+        validate: {
+          validator: (v: number[]) => v.length === 2,
+          message: 'Coordinates must be [lng, lat]',
+        },
+      },
+    },
+    serviceRadiusKm: { type: Number, default: 10 },
+  },
+  {
+    versionKey: false,
+    _id: false,
+  }
+);
+
+const technicianServicesSchema = new Schema<ITechnicianServicesDocument>(
+  {
+    services: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Service',
+        index: true,
+      },
+    ],
+    experienceYears: { type: Number, min: 0 },
+    languages: [{ type: String }],
+    availability: {
+      workingDays: [
+        {
+          type: String,
+          enum: Object.values(TechnicianWorkingDays),
+        },
+      ],
+      startTime: String,
+      endTime: String,
+    },
+  },
+  {
+    versionKey: false,
+    _id: false,
+  }
+);
 
 const technicianSchema = new Schema<ITechnicianDocument>(
   {
-    name: { type: String, trim: true },
-    phone: { type: String, required: true },
-    email: { type: String, lowercase: true, trim: true },
-    profileImage: { type: String, required: true },
-    kyc: {
-      idType: { type: String, required: true },
-      idNumber: { type: String, required: true },
-      documents: { type: [String], required: true },
-      verified: { type: Boolean, default: false },
-    },
-    status: {
+    basicInfo: technicianBasicInfoSchema,
+    location: technicianLocationSchema,
+    services: technicianServicesSchema,
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    totalJobsCompleted: { type: Number, default: 0 },
+    totalEarnings: { type: Number, default: 0, min: 0 },
+    technicianVerificationStatus: {
       type: String,
-      enum: Object.values(TechnicianStatus),
-      default: TechnicianStatus.PENDING,
+      enum: Object.values(TechnicianVerificationStatus),
+      default: TechnicianVerificationStatus.PENDING,
     },
-    serviceRadiusKm: { type: Number, required: true },
-    location: {
-      type: { type: String, enum: ['Point'], required: true },
-      coordinates: { type: [Number], required: true },
-    },
-    rating: {
-      avg: { type: Number, default: 0 },
-      count: { type: Number, default: 0 },
-    },
-    availability: {
-      online: { type: Boolean, default: false },
-      workingHours: { type: [String], required: true },
-    },
+    isPhoneVerified: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true }
 );
 
-technicianSchema.index({ location: '2dsphere' });
+technicianSchema.index({ 'location.location': '2dsphere' });
+technicianSchema.index({ 'basicInfo.phone': 1 }, { unique: true });
 
 export default model<ITechnicianDocument>('Technician', technicianSchema);

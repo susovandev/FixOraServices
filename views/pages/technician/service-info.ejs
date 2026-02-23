@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Select Services | FixOra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 20%,rgba(99,102,241,.07),transparent 40%),
+radial-gradient(circle at 90% 80%,rgba(16,185,129,.07),transparent 40%),
+#f8fafc;
+}
+.glass{
+background:rgba(255,255,255,.75);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.6);
+box-shadow:0 30px 80px rgba(15,23,42,.08);
+border-radius:26px;
+}
+.input{
+width:100%;
+padding:13px 15px;
+border-radius:12px;
+border:1px solid #e2e8f0;
+background:white;
+transition:.2s;
+}
+.input:focus{
+outline:none;
+border-color:#6366f1;
+box-shadow:0 0 0 3px rgba(99,102,241,.15);
+}
+.label{
+font-size:12px;
+font-weight:600;
+color:#64748b;
+margin-bottom:6px;
+display:block;
+}
+.day{
+padding:8px 14px;
+border-radius:999px;
+border:1px solid #e2e8f0;
+cursor:pointer;
+font-size:13px;
+transition:.2s;
+}
+.day.active{
+background:#6366f1;
+color:white;
+border-color:#6366f1;
+box-shadow:0 6px 18px rgba(99,102,241,.25);
+}
+.tag{
+background:#eef2ff;
+color:#4338ca;
+padding:6px 10px;
+border-radius:999px;
+font-size:12px;
+}
+</style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center py-14 px-6">
+    <%- include("../../partials/toast.ejs") %>
+
+<div class="w-full max-w-6xl grid lg:grid-cols-2 gap-10 items-center">
+
+<!-- LEFT BRAND -->
+<div class="hidden lg:block">
+
+<h1 class="text-4xl font-semibold text-slate-900 leading-tight mb-6">
+Tell us what services
+<span class="text-slate-600">you offer</span>
+</h1>
+
+<p class="text-slate-600 mb-10 text-lg">
+We’ll match customers automatically based on your skills, availability,
+and location.
+</p>
+
+<div class="space-y-6">
+
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600">
+<i class="fa-solid fa-bolt"></i>
+</div>
+<div>
+<p class="font-medium">Smart job matching</p>
+<p class="text-sm text-slate-500">Get bookings aligned to your services</p>
+</div>
+</div>
+
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+<i class="fa-solid fa-calendar-days"></i>
+</div>
+<div>
+<p class="font-medium">Flexible availability</p>
+<p class="text-sm text-slate-500">Choose your working schedule</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- RIGHT FORM -->
+<div class="glass p-10">
+
+<!-- PROGRESS -->
+<div class="mb-8">
+<div class="flex justify-between text-xs text-slate-500 mb-2">
+<span>Step 3 of 4</span>
+<span>Services & Availability</span>
+</div>
+<div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+<div class="bg-slate-600 h-2 w-3/4 rounded-full"></div>
+</div>
+</div>
+
+<form action="/technician/service-info" method="POST" class="space-y-7">
+
+<!-- SERVICES -->
+<div>
+<label class="label">Select Services</label>
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+
+<% services.forEach(service=>{ %>
+
+<label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:border-slate-400 cursor-pointer bg-white">
+<input type="checkbox" name="services" value="<%= service._id %>" class="accent-slate-600">
+<span class="text-sm"><%= service.name %></span>
+</label>
+
+<% }) %>
+
+</div>
+</div>
+
+
+<!-- EXPERIENCE -->
+<div>
+<label class="label">Years of Experience</label>
+<input type="number" name="experienceYears" min="0" class="input">
+</div>
+
+
+<!-- LANGUAGES -->
+<div>
+<label class="label">Languages</label>
+
+<input id="langInput" placeholder="Type language & press Enter" class="input">
+
+<div id="langTags" class="flex flex-wrap gap-2 mt-3"></div>
+
+<input type="hidden" name="languages" id="languagesHidden">
+
+</div>
+
+
+<!-- WORKING DAYS -->
+<div>
+<label class="label">Working Days</label>
+
+<div class="flex flex-wrap gap-2">
+
+<% workingDays.forEach(day=>{ %>
+
+<div class="day" onclick="toggleDay(this,'<%= day %>')">
+<%= day %>
+</div>
+
+<% }) %>
+
+</div>
+
+<input type="hidden" name="workingDays" id="workingDaysInput">
+
+</div>
+
+
+<!-- TIME -->
+<div class="grid md:grid-cols-2 gap-6">
+
+<div>
+<label class="label">Start Time</label>
+<input type="time" name="startTime" class="input">
+</div>
+
+<div>
+<label class="label">End Time</label>
+<input type="time" name="endTime" class="input">
+</div>
+
+</div>
+
+
+<button class="w-full py-3 rounded-xl bg-slate-600 hover:bg-slate-700 text-white font-medium shadow-lg shadow-slate-500/30 transition">
+Save & Continue →
+</button>
+
+</form>
+</div>
+</div>
+
+
+
+<script>
+
+//  LANG TAG INPUT 
+const langInput=document.getElementById("langInput");
+const langTags=document.getElementById("langTags");
+const hiddenLang=document.getElementById("languagesHidden");
+
+let langs=[];
+
+langInput.addEventListener("keydown",e=>{
+if(e.key==="Enter"){
+e.preventDefault();
+const val=langInput.value.trim();
+if(!val) return;
+
+langs.push(val);
+renderLangs();
+langInput.value="";
+}
+});
+
+function renderLangs(){
+langTags.innerHTML="";
+langs.forEach(l=>{
+const el=document.createElement("span");
+el.className="tag";
+el.innerText=l;
+langTags.appendChild(el);
+});
+hiddenLang.value=langs.join(",");
+}
+
+
+//  WORKING DAYS
+let days=[];
+
+function toggleDay(el,val){
+el.classList.toggle("active");
+
+if(days.includes(val))
+days=days.filter(d=>d!==val);
+else
+days.push(val);
+
+document.getElementById("workingDaysInput").value=days.join(",");
+}
+
+</script>
+    <%- include("../../partials/toast-script.ejs") %>
+</body>
+</html>

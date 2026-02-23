@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Complete Profile | FixOra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 20%,rgba(99,102,241,.08),transparent 40%),
+radial-gradient(circle at 90% 80%,rgba(16,185,129,.08),transparent 40%),
+#f8fafc;
+}
+.glass{
+background:rgba(255,255,255,.75);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.6);
+box-shadow:0 30px 80px rgba(15,23,42,.08);
+border-radius:26px;
+}
+.input{
+width:100%;
+padding:13px 15px;
+border-radius:12px;
+border:1px solid #e2e8f0;
+background:white;
+transition:.2s;
+}
+.input:focus{
+outline:none;
+border-color:#6366f1;
+box-shadow:0 0 0 3px rgba(99,102,241,.15);
+}
+.label{
+font-size:12px;
+font-weight:600;
+color:#64748b;
+margin-bottom:6px;
+display:block;
+}
+</style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center py-14 px-6">
+    <%- include('../../partials/toast.ejs') %>
+
+<div class="w-full max-w-6xl grid lg:grid-cols-2 gap-10 items-center">
+
+<!--  LEFT BRAND PANEL  -->
+<div class="hidden lg:block">
+
+<h1 class="text-4xl font-semibold text-slate-900 leading-tight mb-6">
+Finish setting up your
+<span class="text-slate-600">FixOra technician profile</span>
+</h1>
+
+<p class="text-slate-600 mb-10 text-lg">
+This takes less than 2 minutes. Once done, you’ll start receiving verified bookings instantly.
+</p>
+
+<div class="space-y-6">
+
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600">
+<i class="fa-solid fa-shield-halved"></i>
+</div>
+<div>
+<p class="font-medium">Trusted by customers</p>
+<p class="text-sm text-slate-500">Verified profiles rank higher in search</p>
+</div>
+</div>
+
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+<i class="fa-solid fa-location-dot"></i>
+</div>
+<div>
+<p class="font-medium">Smart service matching</p>
+<p class="text-sm text-slate-500">We auto-match jobs within your radius</p>
+</div>
+</div>
+
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+<i class="fa-solid fa-wallet"></i>
+</div>
+<div>
+<p class="font-medium">Weekly secure payouts</p>
+<p class="text-sm text-slate-500">Direct bank transfers, zero delays</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!--  RIGHT FORM  -->
+<div class="glass p-10">
+
+<!-- progress -->
+<div class="mb-8">
+<div class="flex justify-between text-xs text-slate-500 mb-2">
+<span>Step 2 of 4</span>
+<span>Basic Details</span>
+</div>
+<div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+<div class="bg-slate-600 h-2 w-1/2 rounded-full"></div>
+</div>
+</div>
+
+<form action="/technician/basic-info" method="POST" enctype="multipart/form-data" class="space-y-7">
+
+<!-- NAME -->
+<div>
+<label class="label">Full Name</label>
+<input name="fullName" required class="input">
+</div>
+
+<!-- PHONE -->
+<div>
+<label class="label">Phone</label>
+<input value="<%= phone %>" readonly class="input bg-slate-100">
+</div>
+
+<!-- EMAIL -->
+<div>
+<label class="label">Email</label>
+<input type="email" name="email" class="input">
+</div>
+
+<!-- PROFILE PHOTO -->
+<div>
+<label class="label">Profile Photo</label>
+<input type="file" name="profileImage" id="photoInput" accept="image/*" class="input">
+
+<img id="preview" class="w-24 h-24 rounded-full mt-4 hidden object-cover border">
+</div>
+
+
+<!-- LOCATION GRID -->
+<div class="grid md:grid-cols-2 gap-6">
+
+<div>
+<label class="label">State</label>
+<select name="state" required class="input">
+<option value="">Select state</option>
+<% states.forEach(s=>{ %>
+<option value="<%= s._id %>"><%= s.name %></option>
+<% }) %>
+</select>
+</div>
+
+<div>
+<div>
+<label class="label">City</label>
+<select name="city" id="citySelect" required class="input">
+<option value="">Select city</option>
+<% cities.forEach(c=>{ %>
+<option value="<%= c._id %>"><%= c.name %></option>
+<% }) %>
+</select>
+</div>
+</div>
+
+<div class="md:col-span-2">
+<label class="label">Address Line</label>
+<input name="address[line1]" class="input">
+</div>
+
+<div>
+<label class="label">Area</label>
+<input name="address[area]" class="input">
+</div>
+
+<div>
+<label class="label">Pincode</label>
+<input name="address[pincode]" class="input">
+</div>
+
+<div>
+<label class="label">Service Radius (km)</label>
+<input type="number" name="serviceRadiusKm" value="10" class="input">
+</div>
+
+</div>
+
+
+<!-- GPS -->
+<div class="bg-slate-50 border rounded-xl p-5">
+
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium">Current location</p>
+<p class="text-sm text-slate-500">Used for nearby booking matches</p>
+</div>
+
+<button type="button"
+onclick="getLocation()"
+class="px-4 py-2 rounded-lg bg-slate-600 text-white hover:bg-slate-700 transition">
+Detect GPS
+</button>
+</div>
+
+<p id="gpsText" class="text-xs text-slate-500 mt-2"></p>
+
+<input type="hidden" name="location[type]" value="Point">
+<input type="hidden" name="location[coordinates][0]" id="lng">
+<input type="hidden" name="location[coordinates][1]" id="lat">
+
+</div>
+
+
+<!-- SUBMIT -->
+<button class="w-full py-3 rounded-xl bg-slate-600 hover:bg-slate-700 text-white font-medium shadow-lg shadow-slate-500/30 transition">
+Save & Continue →
+</button>
+
+</form>
+</div>
+
+</div>
+
+
+
+<script>
+
+// IMAGE PREVIEW
+photoInput.onchange=e=>{
+const f=e.target.files[0];
+if(!f)return;
+const r=new FileReader();
+r.onload=()=>{
+preview.src=r.result;
+preview.classList.remove('hidden');
+};
+r.readAsDataURL(f);
+};
+
+// GPS
+function getLocation(){
+navigator.geolocation.getCurrentPosition(pos=>{
+lat.value=pos.coords.latitude;
+lng.value=pos.coords.longitude;
+gpsText.innerText="Location captured ✔";
+},()=>alert("Location permission needed"));
+}
+
+</script>
+
+
+
+
+<script>
+  const stateSelect = document.querySelector('select[name="state"]');
+const citySelect = document.getElementById('citySelect');
+
+stateSelect.addEventListener('change', async function () {
+  const stateId = this.value;
+
+  // Reset city dropdown
+  citySelect.innerHTML = '<option value="">Loading...</option>';
+
+  if (!stateId) {
+    citySelect.innerHTML = '<option value="">Select city</option>';
+    return;
+  }
+
+  try {
+    const res = await fetch(`/technician/api/cities/${stateId}`);
+    const result = await res.json();
+
+    citySelect.innerHTML = '<option value="">Select city</option>';
+
+    if (result.success && result.data.length > 0) {
+      result.data.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city._id;
+        option.textContent = city.name;
+        citySelect.appendChild(option);
+      });
+    } else {
+      citySelect.innerHTML = '<option value="">No cities found</option>';
+    }
+
+  } catch (err) {
+    console.error(err);
+    citySelect.innerHTML = '<option value="">Error loading cities</option>';
+  }
+});
+</script>
+
+<%- include('../../partials/toast-script.ejs') %>
+</body>
+</html>

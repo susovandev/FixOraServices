@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Careers | FixOra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+<%- include("../partials/toast.ejs") %>
+<%- include("../partials/client/header.ejs") %>
+
+<!-- HERO -->
+<section class="bg-gradient-to-r from-slate-900 to-slate-700 text-white py-20">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold mb-6">
+      Build the Future of Home Services
+    </h1>
+    <p class="text-slate-300 max-w-2xl mx-auto">
+      Join FixOra and help us connect customers with trusted professionals.
+      We’re building a fast-growing platform used by thousands.
+    </p>
+  </div>
+</section>
+
+<!-- PERKS -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <h2 class="text-2xl font-semibold text-center mb-12">Why Work With Us</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+
+    <div class="bg-white p-8 rounded-2xl border shadow-sm text-center">
+      <i class="fa-solid fa-rocket text-slate-900 text-3xl mb-4"></i>
+      <h3 class="font-semibold mb-2">Fast Growth</h3>
+      <p class="text-sm text-slate-500">Work on real products used by real customers.</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl border shadow-sm text-center">
+      <i class="fa-solid fa-user-group text-slate-900 text-3xl mb-4"></i>
+      <h3 class="font-semibold mb-2">Great Team</h3>
+      <p class="text-sm text-slate-500">Collaborate with passionate builders and designers.</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl border shadow-sm text-center">
+      <i class="fa-solid fa-briefcase text-slate-900 text-3xl mb-4"></i>
+      <h3 class="font-semibold mb-2">Flexible Work</h3>
+      <p class="text-sm text-slate-500">Remote-friendly culture with growth opportunities.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- JOB LIST -->
+<section class="max-w-5xl mx-auto px-6 pb-20">
+
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-2xl font-semibold">Open Positions</h2>
+    <p class="text-sm text-slate-500">
+      <%= jobs?.length || 0 %> roles available
+    </p>
+  </div>
+
+  <% if(jobs && jobs.length){ %>
+
+  <div class="space-y-5">
+
+    <% jobs.forEach(job=>{ %>
+
+    <div class="bg-white border rounded-2xl p-6 hover:shadow-lg transition flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+      <div>
+        <h3 class="font-semibold text-lg"><%= job.title %></h3>
+        <p class="text-sm text-slate-500 mt-1">
+          <i class="fa-solid fa-location-dot mr-1"></i> <%= job.location %>
+          •
+          <i class="fa-solid fa-clock mr-1"></i> <%= job.type %>
+        </p>
+      </div>
+
+      <a href="/career/<%= job._id %>"
+         class="px-5 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-600 transition text-sm font-medium text-center">
+        View & Apply
+      </a>
+
+    </div>
+
+    <% }) %>
+
+  </div>
+
+  <% } else { %>
+
+  <!-- EMPTY -->
+  <div class="bg-white border rounded-3xl p-16 text-center">
+    <i class="fa-solid fa-briefcase text-4xl text-slate-300 mb-4"></i>
+    <h3 class="text-xl font-semibold">No openings right now</h3>
+    <p class="text-slate-500 mt-2">
+      We’re not hiring at the moment. Check back later or send your resume anyway.
+    </p>
+
+    <a href="/contact"
+       class="inline-block mt-6 px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-700">
+       Send Resume
+    </a>
+  </div>
+
+  <% } %>
+
+</section>
+
+<!-- FOOTER INCLUDE -->
+<%- include("../partials/client/footer.ejs") %>
+<%- include("../partials/client/profile-script.ejs") %>
+<%- include("../partials/toast-script.ejs") %>
+
+</body>
+</html>

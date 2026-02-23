@@ -1,0 +1,657 @@
+<html>
+  <%- include('../../partials/head.ejs', { title: pageTitle || 'Service |Categories' }) %>
+
+  <div id="toastContainer"
+    class="fixed top-5 right-5 z-[9999] space-y-3"></div>
+  <body class="bg-gray-100 min-h-screen">
+    <%- include("../../partials/toast.ejs") %>
+    <div class="flex min-h-screen">
+      <!-- SIDEBAR -->
+      <%- include('./components/sidebar.ejs') %>
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- TOP BAR -->
+      <%- include('./components/main-header.ejs') %>
+
+      <!-- CONTENT -->
+      <main class="flex-1 p-6 space-y-6">
+        <!-- HEADER -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-semibold text-slate-800">
+              Technician Management
+            </h1>
+            <p class="text-sm text-slate-500">
+              Review and manage technician applications
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
+              <%= pendingCount || 0 %> Pending Review
+            </span>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Pending</p>
+            <h3 class="text-xl font-semibold text-amber-600">
+              <%= pendingCount || 0 %>
+            </h3>
+          </div>
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Approved</p>
+            <h3 class="text-xl font-semibold text-emerald-600">
+              <%= approvedCount || 0 %>
+            </h3>
+          </div>
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Rejected</p>
+            <h3 class="text-xl font-semibold text-red-600">
+              <%= rejectedCount || 0 %>
+            </h3>
+          </div>
+          <div class="bg-white p-4 rounded-xl border shadow-sm">
+            <p class="text-xs text-slate-500">Inactive</p>
+            <h3 class="text-xl font-semibold text-slate-700">
+              <%= inactiveCount || 0 %>
+            </h3>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-6">
+
+  <!-- Status Tabs -->
+  <div class="flex bg-slate-100 p-1 rounded-xl">
+
+    <a href="?status=applied"
+      class="px-4 py-2 text-sm font-medium rounded-lg transition
+      <%= currentStatus === 'applied' ? 
+        'bg-white shadow text-slate-900' : 
+        'text-slate-600 hover:text-slate-900' %>">
+      Pending
+      <span class="ml-1 text-xs text-amber-600">
+        (<%= pendingCount %>)
+      </span>
+    </a>
+
+    <a href="?status=approved"
+      class="px-4 py-2 text-sm font-medium rounded-lg transition
+      <%= currentStatus === 'approved' ? 
+        'bg-white shadow text-slate-900' : 
+        'text-slate-600 hover:text-slate-900' %>">
+      Approved
+      <span class="ml-1 text-xs text-amber-600">
+        (<%= approvedCount %>)
+      </span>
+    </a>
+
+    <a href="?status=rejected"
+      class="px-4 py-2 text-sm font-medium rounded-lg transition
+      <%= currentStatus === 'rejected' ? 
+        'bg-white shadow text-slate-900' : 
+        'text-slate-600 hover:text-slate-900' %>">
+      Rejected
+      <span class="ml-1 text-xs text-amber-600">
+        (<%= rejectedCount %>)
+      </span>
+    </a>
+
+  </div>
+
+</div>
+
+
+        <!-- Technician Table -->
+      <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
+      <tr>
+        <th class="px-6 py-3 text-left">Technician</th>
+        <th class="px-6 py-3 text-left">Categories</th>
+        <th class="px-6 py-3 text-left">City</th>
+        <th class="px-6 py-3 text-left">Status</th>
+        <th class="px-6 py-3 text-right">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody class="divide-y">
+      <% if (!technicians.length) { %>
+              <!-- EMPTY -->
+              <tr>
+                <td colspan="6" class="px-6 py-20 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                      <i class="fa-solid fa-layer-group text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">
+                      No technicians found
+                    </h3>
+                    <p class="text-sm text-gray-500 max-w-md">
+                      You have not added any technicians yet.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            <% } else { %>
+      <% technicians.forEach(t => { %>
+      <tr class="hover:bg-slate-50 transition">
+
+        <!-- Technician Info -->
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <img src="<%= t?.profileImage?.url || 'https://ui-avatars.com/api/?name=' + t.name %>"
+              class="w-10 h-10 rounded-full object-cover" />
+            <div>
+              <p class="font-medium text-slate-800">
+                <%= t?.name  || 'N/A' %>
+              </p>
+              <p class="text-xs text-slate-500">
+                <%= t?.email || 'N/A' %>
+              </p>
+            </div>
+          </div>
+        </td>
+
+        <!-- Categories -->
+        <td class="px-6 py-4 text-slate-600">
+          <%= t?.categories?.join(', ') || '-' %>
+        </td>
+
+        <!-- City -->
+        <td class="px-6 py-4 text-slate-600">
+          <%= t?.city || 'N/A' %>
+        </td>
+
+        <!-- Status Badge -->
+        <td class="px-6 py-4">
+          <% if(t.status === 'PENDING') { %>
+            <span class="px-2 py-1 text-xs bg-amber-100 text-amber-700 rounded-full">
+              Pending
+            </span>
+          <% } else if(t.status === 'APPROVED') { %>
+            <span class="px-2 py-1 text-xs bg-emerald-100 text-emerald-700 rounded-full">
+              Approved
+            </span>
+          <% } else { %>
+            <span class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded-full">
+              Rejected
+            </span>
+          <% } %>
+        </td>
+
+        <!-- Actions -->
+        <td class="px-6 py-4 text-right">
+          <button
+            class="view-tech-btn inline-flex items-center gap-2
+                   px-3 py-1.5 text-sm font-medium
+                   text-indigo-600 hover:bg-indigo-50
+                   rounded-lg transition"
+            data-id="<%= t._id %>"
+          >
+            <i class="fa-solid fa-eye text-xs"></i>
+            Review
+          </button>
+        </td>
+
+      </tr>
+      <% }) %>
+      <% } %>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- Technician Drawer -->
+<div id="drawerOverlay"
+     class="fixed inset-0 bg-black/30 hidden z-40"></div>
+<div id="techDrawer"
+  class="fixed inset-y-0 right-0 w-[520px]
+         bg-white shadow-2xl border-l
+         transform translate-x-full transition duration-300
+         z-50 flex flex-col">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between p-6 border-b">
+    <h2 class="text-lg font-semibold text-slate-800">
+      Technician Review
+    </h2>
+
+    <button
+      onclick="closeDrawer()"
+      class="w-9 h-9 flex items-center justify-center
+             rounded-lg hover:bg-slate-100
+             text-slate-500 hover:text-slate-800 transition">
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="flex-1 overflow-y-auto p-6 space-y-8">
+
+  <!-- Technician Profile -->
+  <div class="flex items-center gap-4">
+    <img id="techAvatar"
+         src="https://ui-avatars.com/api/?name=Technician"
+         class="w-16 h-16 rounded-full object-cover border" />
+
+    <div>
+      <h3 id="techName" class="text-lg font-semibold text-slate-800">
+        --
+      </h3>
+      <p id="techPhone" class="text-sm text-slate-500">
+        --
+      </p>
+      <span id="techStatus"
+            class="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-700">
+        Pending
+      </span>
+    </div>
+  </div>
+
+  <!-- Basic Info -->
+  <div class="grid grid-cols-2 gap-4 text-sm">
+    <div>
+      <p class="text-slate-400">Email</p>
+      <p id="techEmail" class="text-slate-700 font-medium">--</p>
+    </div>
+
+    <div>
+      <p class="text-slate-400">Service Radius</p>
+      <p id="techRadius" class="text-slate-700 font-medium">--</p>
+    </div>
+
+    <div>
+      <p class="text-slate-400">Joined</p>
+      <p id="techJoined" class="text-slate-700 font-medium">--</p>
+    </div>
+
+    <div>
+      <p class="text-slate-400">KYC ID Type</p>
+      <p id="techKycType" class="text-slate-700 font-medium">--</p>
+    </div>
+  </div>
+
+  <!-- KYC Documents -->
+  <div>
+    <h4 class="text-sm font-semibold text-slate-700 mb-3">
+      KYC Documents
+    </h4>
+
+    <div id="kycDocuments"
+         class="grid grid-cols-2 gap-3">
+    </div>
+  </div>
+
+</div>
+
+
+  <!-- Sticky Footer -->
+<div class="p-4 border-t bg-white flex justify-between">
+
+  <button id="rejectBtn"
+    class="px-4 py-2 text-sm rounded-lg
+           text-red-600 hover:bg-red-50 transition">
+    Reject
+  </button>
+
+  <div class="flex gap-2">
+    <button id="deactivateBtn"
+      class="px-4 py-2 text-sm rounded-lg
+             border text-slate-600 hover:bg-slate-50 transition">
+      Deactivate
+    </button>
+
+    <button id="approveBtn"
+      class="px-4 py-2 text-sm rounded-lg
+             bg-indigo-600 hover:bg-indigo-700
+             text-white transition">
+      Approve
+    </button>
+  </div>
+
+</div>
+
+</div>
+      </main>
+      <%- include('./components/footer.ejs') %>
+    </div>
+  </div>
+  <%- include('../../partials/toast-script.ejs') %>
+
+<!-- Document Modal -->
+  <div id="documentModal"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm
+         hidden items-center justify-center z-50">
+
+  <div class="bg-white w-full max-w-3xl
+              rounded-2xl shadow-2xl overflow-hidden">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between
+                px-6 py-4 border-b">
+      <h3 class="text-sm font-semibold text-slate-800">
+        Document Preview
+      </h3>
+
+      <button onclick="closeDocumentModal()"
+        class="text-slate-500 hover:text-slate-800">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 bg-slate-50 flex items-center justify-center">
+      <img id="previewImage"
+        class="max-h-[70vh] rounded-lg shadow" />
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 border-t flex justify-end gap-3">
+
+      <button
+        class="px-4 py-2 text-sm rounded-lg
+               text-red-600 hover:bg-red-50">
+        Request Re-upload
+      </button>
+
+      <button 
+      class="verifyDocBtn px-3 py-1 text-xs bg-green-600 text-white rounded"
+      data-type="AADHAAR">
+      Verify
+    </button>
+
+      <button 
+      class="rejectDocBtn px-3 py-1 text-xs bg-red-600 text-white rounded"
+      data-type="AADHAAR">
+      Reject
+    </button>
+
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+const drawer = document.getElementById('techDrawer');
+const overlay = document.getElementById('drawerOverlay');
+
+let currentTechId = null;
+document.querySelectorAll('.view-tech-btn').forEach(btn => {
+  btn.addEventListener('click', async function () {
+    const techId = this.dataset.id;
+    currentTechId = techId;
+    console.log('hello everyone', techId)
+
+    try {
+      const res = await fetch(`/admin/technicians/${techId}`);
+      const data = await res.json();
+
+      console.log(`DATA`, data);
+
+      populateDrawer(data);
+
+      drawer.classList.remove('translate-x-full');
+      overlay.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+
+    } catch (err) {
+      console.error(err);
+    }
+  });
+});
+
+function closeDrawer() {
+  drawer.classList.add('translate-x-full');
+  overlay.classList.add('hidden');
+  document.body.classList.remove('overflow-hidden');
+}
+
+if (overlay) {
+  overlay.addEventListener('click', closeDrawer);
+}
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeDrawer();
+});
+
+
+document.getElementById('approveBtn')
+  .addEventListener('click', () => {
+    updateTechnicianStatus('APPROVED');
+    closeDrawer();
+  });
+
+document.getElementById('rejectBtn')
+  .addEventListener('click', () => {
+    updateTechnicianStatus('REJECTED');
+    closeDrawer();
+  });
+
+document.getElementById('deactivateBtn')
+  .addEventListener('click', () => {
+    updateTechnicianStatus('SUSPENDED');
+    closeDrawer();
+  });
+
+
+async function updateTechnicianStatus(status) {
+  if (!currentTechId) return;
+
+  try {
+    const res = await fetch(`/admin/technicians/${currentTechId}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || 'Something went wrong');
+      return;
+    }
+
+    // Update badge in drawer
+    document.getElementById('techStatus').innerText = status;
+
+    showToast(`Technician ${status} successfully`, 'success');
+
+  } catch (err) {
+    console.error(err);
+    showToast('Server error', 'error');
+  }
+}
+
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+
+  const toast = document.createElement('div');
+
+  const colors = {
+    success: 'bg-green-600',
+    error: 'bg-red-600',
+    warning: 'bg-yellow-500',
+    info: 'bg-indigo-600'
+  };
+
+  toast.className = `
+    ${colors[type] || colors.success}
+    text-white px-4 py-3 rounded-lg shadow-lg
+    transform transition-all duration-300
+    translate-x-full opacity-0
+    flex items-center gap-2
+  `;
+
+  toast.innerHTML = `
+    <span>${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  // Animate in
+  setTimeout(() => {
+    toast.classList.remove('translate-x-full', 'opacity-0');
+  }, 10);
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.classList.add('translate-x-full', 'opacity-0');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+
+function populateDrawer(data) {
+  const { technician, verification } = data;
+  if (!technician) return;
+
+  // Profile
+  document.getElementById('techName').textContent =
+    technician.name || 'No Name';
+
+  document.getElementById('techPhone').textContent =
+    technician.phone || '--';
+
+  document.getElementById('techEmail').textContent =
+    technician.email || '--';
+
+  document.getElementById('techRadius').textContent =
+    technician.serviceRadiusKm
+      ? technician.serviceRadiusKm + ' km'
+      : '--';
+
+  document.getElementById('techJoined').textContent =
+    technician.createdAt
+      ? new Date(technician.createdAt).toLocaleDateString()
+      : '--';
+
+  // Avatar
+  if (technician.profileImage?.url) {
+    document.getElementById('techAvatar').src =
+      technician.profileImage.url;
+  }
+
+  // Status badge color
+  const statusEl = document.getElementById('techStatus');
+  statusEl.textContent = technician.status || 'Pending';
+
+  statusEl.className =
+    "inline-block mt-2 text-xs px-2 py-1 rounded-full ";
+
+  if (technician.status === 'APPROVED') {
+    statusEl.classList.add('bg-green-100', 'text-green-700');
+  } else if (technician.status === 'REJECTED') {
+    statusEl.classList.add('bg-red-100', 'text-red-700');
+  } else {
+    statusEl.classList.add('bg-yellow-100', 'text-yellow-700');
+  }
+
+  // KYC Type
+  document.getElementById('techKycType').textContent =
+    verification?.kyc?.idType || '--';
+
+  // Documents
+  const kycContainer = document.getElementById('kycDocuments');
+  kycContainer.innerHTML = '';
+
+  if (verification?.kyc?.documents?.length) {
+    verification.kyc.documents.forEach(doc => {
+      if (!doc.fileUrl?.url) return;
+
+      const img = document.createElement('img');
+      img.src = doc.fileUrl.url;
+      img.className =
+        "rounded-lg border cursor-pointer hover:shadow-md transition h-28 w-full object-cover";
+
+      img.onclick = () => openDocumentModal(doc.fileUrl.url);
+
+      kycContainer.appendChild(img);
+    });
+  } else {
+    kycContainer.innerHTML =
+      '<p class="text-sm text-slate-400 col-span-2">No documents uploaded</p>';
+  }
+}
+
+
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('verifyDocBtn')) {
+
+    const type = e.target.dataset.type;
+
+    verifyKycDocument(type, 'APPROVED');
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('rejectDocBtn')) {
+
+    const type = e.target.dataset.type;
+
+    verifyKycDocument(type, 'REJECTED');
+  }
+});
+async function verifyKycDocument(type, status) {
+  if (!currentTechId) return;
+
+  try {
+    const res = await fetch(
+      `/admin/technicians/${currentTechId}/kyc-document`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type,
+          status: status
+        })
+      }
+    );
+
+    const data = await res.json();
+    closeDocumentModal();
+
+    if (!res.ok) {
+      showToast(data.message || 'Something went wrong', 'error');
+      return;
+    }
+
+    showToast(`${type} verified successfully`, 'success');
+
+    // Optional: reload drawer data
+    // reloadTechnician(currentTechId);
+
+  } catch (err) {
+    console.error(err);
+    showToast('Server error', 'error');
+  }
+}
+
+</script>
+
+
+<script>
+function openDocumentModal(src) {
+  document.getElementById('previewImage').src = src;
+  const modal = document.getElementById('documentModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeDocumentModal() {
+  const modal = document.getElementById('documentModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+</script>
+
+</body>
+</html>

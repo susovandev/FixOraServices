@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Terms & Conditions | FixOra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-50 text-slate-800">
+    <%- include("../partials/toast.ejs") %>
+    <!-- HEADER INCLUDE -->
+    <%- include("../partials/client/header.ejs") %>
+    <!-- HERO -->
+    <section class="bg-gradient-to-r from-slate-900 to-slate-700 text-white py-16">
+      <div class="max-w-4xl mx-auto px-6">
+        <h1 class="text-4xl font-bold mb-3">Terms & Conditions</h1>
+        <p class="text-slate-300 text-sm">Last updated: <%= new Date().toDateString() %></p>
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="max-w-4xl mx-auto px-6 py-14">
+      <div class="bg-white border rounded-2xl shadow-sm p-8 space-y-8 leading-relaxed">
+        <!-- INTRO -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">1. Acceptance of Terms</h2>
+          <p class="text-slate-600">
+            By accessing or using FixOra, you agree to comply with these Terms & Conditions. If you
+            disagree, please do not use our services.
+          </p>
+        </div>
+
+        <!-- SERVICES -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">2. Services</h2>
+          <p class="text-slate-600">
+            FixOra connects users with verified service professionals for home services. We aim to
+            provide accurate pricing, availability, and quality professionals, but service outcomes
+            depend on technician performance.
+          </p>
+        </div>
+
+        <!-- BOOKINGS -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">3. Bookings & Payments</h2>
+          <ul class="list-disc ml-6 text-slate-600 space-y-1">
+            <li>Prices may vary based on location or service complexity</li>
+            <li>Payment must be completed as per booking terms</li>
+            <li>Cancellations may include applicable charges</li>
+          </ul>
+        </div>
+
+        <!-- USER RESPONSIBILITIES -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">4. User Responsibilities</h2>
+          <ul class="list-disc ml-6 text-slate-600 space-y-1">
+            <li>Provide accurate contact and address details</li>
+            <li>Do not misuse platform or attempt fraud</li>
+            <li>Respect technicians and service policies</li>
+          </ul>
+        </div>
+
+        <!-- LIABILITY -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">5. Limitation of Liability</h2>
+          <p class="text-slate-600">
+            FixOra is not liable for indirect damages, delays, or losses arising from service
+            execution. Our role is limited to facilitating the booking platform.
+          </p>
+        </div>
+
+        <!-- PRIVACY -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">6. Privacy</h2>
+          <p class="text-slate-600">
+            Your use of FixOra is also governed by our
+            <a href="/privacy" class="text-indigo-600 hover:underline">Privacy Policy</a>.
+          </p>
+        </div>
+
+        <!-- CHANGES -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">7. Changes to Terms</h2>
+          <p class="text-slate-600">
+            We may update these terms anytime. Continued use of the platform means you accept the
+            revised terms.
+          </p>
+        </div>
+
+        <!-- CONTACT -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">8. Contact Us</h2>
+          <p class="text-slate-600">
+            If you have questions, contact us at
+            <a href="mailto:support@fixora.com" class="text-indigo-600 hover:underline">
+              support@fixora.com
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <%- include("../partials/client/footer.ejs") %> <%-
+    include("../partials/client/profile-script.ejs") %> <%- include("../partials/toast-script.ejs")
+    %>
+  </body>
+</html>

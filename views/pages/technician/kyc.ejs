@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Join as Technician | FixOra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08), transparent 40%),
+          radial-gradient(circle at 90% 0%, rgba(99, 102, 241, 0.08), transparent 40%), #f8fafc;
+      }
+
+      /* Slider animation */
+      .slider {
+        display: flex;
+        transition: transform 0.6s ease;
+      }
+    </style>
+  </head>
+
+<section class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-50 py-16 px-6">
+
+<div class="max-w-6xl mx-auto">
+
+<!-- HEADER -->
+<div class="mb-10 flex justify-between items-center">
+  <div>
+    <h1 class="text-3xl font-bold text-slate-900">Identity Verification</h1>
+    <p class="text-slate-500 mt-1">Secure your technician account by completing KYC</p>
+  </div>
+
+  <% if(kyc && kyc.kycStatus){ %>
+    <span class="px-4 py-2 rounded-full text-sm font-semibold
+      <%= kyc.kycStatus==='verified'?'bg-emerald-100 text-emerald-700':
+      kyc.kycStatus==='rejected'?'bg-red-100 text-red-700':
+      'bg-amber-100 text-amber-700' %>">
+      <%= kyc.kycStatus.toUpperCase() %>
+    </span>
+  <% } %>
+</div>
+
+<form action="/technician/kyc" method="POST" enctype="multipart/form-data"
+class="grid md:grid-cols-2 gap-8">
+
+<!-- LEFT CARD -->
+<div class="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+
+<h2 class="text-xl font-semibold">Government Details</h2>
+
+<div>
+<label class="text-sm font-medium text-slate-600">Aadhaar Number</label>
+<input name="aadhaarNumber"
+value="<%= kyc?.aadhaarNumber || '' %>"
+required maxlength="12"
+class="mt-2 w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-slate-500"/>
+</div>
+
+<div>
+<label class="text-sm font-medium text-slate-600">PAN Number</label>
+<input name="panNumber"
+value="<%= kyc?.panNumber || '' %>"
+required
+class="mt-2 w-full uppercase border rounded-lg px-4 py-3 focus:ring-2 focus:ring-slate-500"/>
+</div>
+
+<p class="text-xs text-slate-400">
+Your documents are encrypted & stored securely.
+</p>
+
+</div>
+
+<!-- RIGHT CARD -->
+<div class="bg-white rounded-2xl shadow-lg p-8">
+
+<h2 class="text-xl font-semibold mb-6">Upload Documents</h2>
+
+<div class="grid gap-6">
+
+<!-- AADHAAR FRONT -->
+<div class="upload-box border-2 border-dashed rounded-xl p-6 text-center hover:border-slate-500 transition">
+
+<label class="cursor-pointer block">
+
+<input type="file" name="aadhaarFrontImage" hidden accept="image/*"
+onchange="preview(event,'aadhaarFrontPreview')">
+
+<p class="font-medium">Aadhaar Front</p>
+<p class="text-sm text-slate-500">Click or drag image</p>
+
+<img id="aadhaarFrontPreview"
+src="<%= kyc?.aadhaarFrontImage || '' %>"
+class="mx-auto mt-4 rounded-lg max-h-40 <%= !kyc?.aadhaarFrontImage?'hidden':'' %>">
+
+</label>
+
+</div>
+
+<!-- AADHAAR BACK -->
+<div class="upload-box border-2 border-dashed rounded-xl p-6 text-center hover:border-slate-500 transition">
+
+<label class="cursor-pointer block">
+
+<input type="file" name="aadhaarBackImage" hidden accept="image/*"
+onchange="preview(event,'aadhaarBackPreview')">
+
+<p class="font-medium">Aadhaar Back</p>
+<p class="text-sm text-slate-500">Click or drag image</p>
+
+<img id="aadhaarBackPreview"
+src="<%= kyc?.aadhaarBackImage || '' %>"
+class="mx-auto mt-4 rounded-lg max-h-40 <%= !kyc?.aadhaarBackImage?'hidden':'' %>">
+
+</label>
+
+</div>
+
+<!-- PAN -->
+<div class="upload-box border-2 border-dashed rounded-xl p-6 text-center hover:border-slate-500 transition">
+
+<label class="cursor-pointer block">
+
+<input type="file" name="panCardImage" hidden accept="image/*"
+onchange="preview(event,'panPreview')">
+
+<p class="font-medium">PAN Card</p>
+<p class="text-sm text-slate-500">Click or drag image</p>
+
+<img id="panPreview"
+src="<%= kyc?.panCardImage || '' %>"
+class="mx-auto mt-4 rounded-lg max-h-40 <%= !kyc?.panCardImage?'hidden':'' %>">
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- FULL WIDTH BUTTON -->
+<div class="md:col-span-2 flex justify-end mt-4">
+
+<button
+class="px-10 py-4 bg-slate-600 hover:bg-slate-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition">
+
+Submit Verification
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</section>
+
+<script>
+function preview(event,id){
+ const img=document.getElementById(id);
+ img.src=URL.createObjectURL(event.target.files[0]);
+ img.classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

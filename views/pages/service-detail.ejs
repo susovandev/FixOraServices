@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title><%= service.name %> | FixOra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+body{
+background:
+radial-gradient(circle at 0% 0%, rgba(99,102,241,.06), transparent 40%),
+radial-gradient(circle at 100% 100%, rgba(14,165,233,.05), transparent 40%),
+#f8fafc;
+}
+
+.glass{
+backdrop-filter: blur(24px);
+background: rgba(255,255,255,0.7);
+}
+
+.fade-up{
+animation: fadeUp .8s ease forwards;
+opacity:0;
+transform: translateY(20px);
+}
+
+@keyframes fadeUp{
+to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body class="text-slate-900 antialiased">
+  <%- include("../partials/toast.ejs") %>
+
+<!-- HEADER INCLUDE -->
+<%- include("../partials/client/header.ejs") %>
+
+<div class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-12 gap-14">
+
+<!--  LEFT (MAIN CONTENT)  -->
+<div class="col-span-12 xl:col-span-7 space-y-16">
+
+<!-- HERO -->
+<div class="fade-up">
+
+<p class="text-xs tracking-widest uppercase text-slate-600 font-semibold">
+Professional Home Service
+</p>
+
+<h1 class="text-5xl font-bold mt-4 leading-tight tracking-tight">
+<%= service.name %>
+</h1>
+
+<p class="text-lg text-slate-500 mt-6 max-w-2xl">
+<%= service.description %>
+</p>
+
+<div class="flex items-center gap-8 mt-8 text-sm text-slate-500">
+
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-star text-yellow-400"></i>
+<span class="font-medium text-slate-800">
+<%= service.avgRating || "4.9" %>
+</span>
+</div>
+
+<div>1200+ completed jobs</div>
+
+<div>100% verified professionals</div>
+
+</div>
+
+</div>
+
+<!-- IMAGE -->
+<div class="rounded-[32px] overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)] fade-up">
+
+<img
+src="<%= service.images?.[0]?.url || 'https://dummyimage.com/1200x800' %>"
+class="w-full h-[520px] object-cover transition duration-700 hover:scale-105"
+/>
+
+</div>
+
+<!-- FEATURES -->
+<div class="grid md:grid-cols-3 gap-6 fade-up">
+
+<div class="glass rounded-3xl p-8 border border-white/40 shadow-xl hover:-translate-y-1 transition">
+<i class="fa-solid fa-clock text-slate-600 text-xl mb-4"></i>
+<h3 class="font-semibold mb-2">Quick Service</h3>
+<p class="text-sm text-slate-500">
+<%= service.baseDurationMinutes %> mins average completion time.
+</p>
+</div>
+
+<div class="glass rounded-3xl p-8 border border-white/40 shadow-xl hover:-translate-y-1 transition">
+<i class="fa-solid fa-shield text-emerald-600 text-xl mb-4"></i>
+<h3 class="font-semibold mb-2">Fully Insured</h3>
+<p class="text-sm text-slate-500">
+All technicians background verified.
+</p>
+</div>
+
+<div class="glass rounded-3xl p-8 border border-white/40 shadow-xl hover:-translate-y-1 transition">
+<i class="fa-solid fa-headset text-purple-600 text-xl mb-4"></i>
+<h3 class="font-semibold mb-2">Priority Support</h3>
+<p class="text-sm text-slate-500">
+24/7 assistance for premium customers.
+</p>
+</div>
+
+</div>
+
+<!-- REVIEWS -->
+<div class="space-y-8 fade-up">
+
+<h2 class="text-3xl font-semibold tracking-tight">
+What Customers Say
+</h2>
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<% (reviews || []).forEach(r=>{ %>
+
+<div class="glass rounded-3xl p-8 border shadow-xl hover:shadow-2xl transition">
+
+<div class="flex items-center justify-between">
+
+<p class="font-semibold text-slate-800">
+<%= r.username %>
+</p>
+
+<span class="text-yellow-400 text-sm">
+<i class="fa-solid fa-star"></i> <%= r.rating %>
+</span>
+
+</div>
+
+<p class="text-sm text-slate-600 mt-4 leading-relaxed">
+<%= r.comment %>
+</p>
+
+</div>
+
+<% }) %>
+
+</div>
+
+</div>
+
+</div>
+
+<!--  CENTER (BOOKING CARD)  -->
+<div class="col-span-12 xl:col-span-5">
+
+<div class="sticky top-32 fade-up">
+
+<div class="glass rounded-[32px] p-10 border border-white/40 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)]">
+
+<p class="text-sm text-slate-500">Starting at</p>
+
+<p class="text-5xl font-bold text-slate-900 mt-2">
+₹<%= service.pricingId?.basePrice || "—" %>
+</p>
+
+<p class="text-xs text-slate-500 mt-2">
+No hidden charges. Transparent pricing.
+</p>
+
+<button
+class="mt-10 w-full py-4 rounded-2xl
+bg-slate-900 hover:bg-slate-700
+text-white font-semibold text-lg
+transition duration-300 shadow-lg hover:shadow-xl">
+
+Book Now
+
+</button>
+
+
+<button
+class="mt-4 w-full py-4 rounded-2xl
+border border-slate-200 hover:bg-slate-50
+transition" id="addToCartButton"
+data-service-id="<%= service._id %>"
+>
+
+Add to Wishlist
+
+</button>
+
+<div class="mt-10 space-y-4 text-sm text-slate-600">
+
+<div class="flex items-center gap-3">
+<i class="fa-solid fa-circle-check text-emerald-500"></i>
+Free cancellation
+</div>
+
+<div class="flex items-center gap-3">
+<i class="fa-solid fa-circle-check text-emerald-500"></i>
+Instant confirmation
+</div>
+
+<div class="flex items-center gap-3">
+<i class="fa-solid fa-circle-check text-emerald-500"></i>
+Secure online payment
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<%- include("../partials/client/footer.ejs") %>
+
+
+<script>
+const btn = document.getElementById("addToCartButton");
+
+btn.addEventListener("click", async function () {
+console.log('i am clicked')
+  const serviceId = this.dataset.serviceId;
+
+  if(!serviceId){
+    alert("Service missing");
+    return;
+  }
+
+  try {
+
+    btn.disabled = true;
+    btn.innerText = "Adding...";
+
+    const res = await fetch("/api/wishlist/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({ serviceId })
+    });
+
+    const data = await res.json();
+
+    if(res.status === 401){
+      window.location.href = "/login";
+      return;
+    }
+
+    if(res.ok){
+      btn.innerText = "✓ Added to Wishlist";
+      btn.classList.add("bg-green-500","text-white","border-green-500");
+    } else {
+      btn.disabled = false;
+      btn.innerText = "Add to Wishlist";
+      alert(data.message || "Failed");
+    }
+
+  } catch(err){
+    console.error(err);
+    btn.disabled = false;
+    btn.innerText = "Add to Wishlist";
+    alert("Server error");
+  }
+
+});
+</script>
+
+<%- include("../partials/client/profile-script.ejs") %>
+<%- include("../partials/toast-script.ejs") %>
+</body>
+</html>

@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,6 +29,44 @@
       scrollbar-width: none;     /* Firefox */
     }
 
+    @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 1s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+
+
+
+
+
   </style>
   <link
     rel="stylesheet"
@@ -38,1118 +77,834 @@
 
 <body>
 <%- include("../partials/toast.ejs") %>
+
+
 <!-- TOAST CONTAINER -->
 <div
   id="toastContainer"
   class="fixed top-6 right-6 z-[9999] space-y-3"
 ></div>
+
 <!-- Header -->
-<header class="sticky top-0 z-50 bg-white border-b">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-    <!-- Logo -->
-    <div class="flex items-center gap-2">
-      <img src="/assets/logo.png" class="h-8" alt="FixOra Logo" />
-      <span class="font-semibold text-lg">
-        FixOra <span class="font-normal text-gray-600">Services</span>
-      </span>
-    </div>
-
-    <!-- Nav -->
-    <nav class="hidden md:flex gap-6 text-sm font-medium">
-      <a href="#" class="hover:text-black">Revamp</a>
-      <a href="#" class="hover:text-black">Native</a>
-      <a href="#" class="hover:text-black">Beauty</a>
-    </nav>
-
-    <!-- Actions -->
-    <div class="flex items-center gap-4 relative">
-      <!-- Location (future live) -->
-      <button
-        class="hidden lg:flex items-center gap-1 text-sm text-gray-600 hover:text-black"
-        id="location-btn"
-      >
-        <i data-lucide="map-pin" class="w-4 h-4"></i>
-        <span id="location-text">Dadar, Mumbai</span>
-      </button>
-
-      <!-- Search -->
-      <div class="relative hidden md:block">
-        <input
-          type="text"
-          placeholder="Search for services"
-          class="px-3 py-2 w-56 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black"
-          id="service-search"
-        />
-
-        <!-- Search Dropdown -->
-        <div
-          id="search-dropdown"
-          class="absolute mt-2 w-full bg-white border rounded-lg shadow-lg hidden"
-        >
-          <!-- Dynamic items -->
-          <div class="p-3 text-sm text-gray-500">Start typing to search…</div>
-        </div>
-      </div>
-
-      <!-- Icons -->
-      <div class="flex items-center gap-3">
-        <button class="p-2 rounded-full hover:bg-gray-100 transition">
-          <a href="/cart">
-            <i class="w-5 h-5 fas fa-shopping-cart"></i>
-          </a>
-        </button>
-
-<!-- Profile -->
-<div class="relative">
-  <button
-    id="profileBtn"
-    class="p-2 rounded-full hover:bg-gray-100 transition"
-  >
-    <i class="fas fa-user w-5 h-5"></i>
-  </button>
-
-  <!-- Dropdown -->
-  <div
-    id="profileDropdown"
-    class="absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg
-    opacity-0 scale-95 pointer-events-none
-    transition-all duration-150 origin-top-right z-50"
-  >
-    <% if (!user) { %>
-      <button
-        id="openLoginModal"
-        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
-      >
-        Login
-      </button>
-    <% } else { %>
-      <div class="px-4 py-2 text-sm text-gray-500">
-        Hi, <%= user.username %>
-      </div>
-      <hr />
-      <a href="/dashboard" class="block px-4 py-2 text-sm hover:bg-gray-50">
-        Dashboard
-      </a>
-      <a href="/orders" class="block px-4 py-2 text-sm hover:bg-gray-50">
-        My Orders
-      </a>
-      <a href="/profile" class="block px-4 py-2 text-sm hover:bg-gray-50">
-        Profile
-      </a>
-      <hr />
-      <a
-        href="/logout"
-        class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-      >
-        Logout
-      </a>
-    <% } %>
-  </div>
-</div>
-      </div>
-  </div>
-</header>
-<!-- Header -->
+<%- include("../partials/client/header.ejs") %>
 
 <!-- Main -->
 <main class="min-h-screen">
-  <!-- HERO -->
-  <!-- <section class="bg-white py-20">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <h1 class="text-4xl font-bold mb-4">Premium Home Services, On Demand</h1>
-      <p class="text-gray-600 max-w-xl mx-auto">
-        Trusted professionals for cleaning, beauty, repairs & more
-      </p>
-    </div>
-  </section> -->
+  <!-- HERO SECTION -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900 py-28 text-white">
+  <div class="relative max-w-7xl mx-auto px-6 text-center">
 
-  <!-- SHOWCASE / TRUST SECTION -->
-<section class="bg-white py-20">
-  <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+    <!-- Badge -->
+    <div class="inline-flex items-center gap-2 
+      bg-white/10 backdrop-blur-md border border-white/20
+      px-4 py-1.5 rounded-full text-sm mb-8
+      animate-fade-in">
+      <span class="h-2 w-2 bg-green-400 rounded-full animate-ping"></span>
+      Trusted by 12,000+ happy customers
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6 
+      bg-gradient-to-r from-white via-slate-200 to-purple-200
+      bg-clip-text text-transparent
+      animate-slide-up">
+      Premium Home Services, <br />
+      On Demand.
+    </h1>
+
+    <!-- Subtext -->
+    <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-10 animate-slide-up delay-150">
+      Verified professionals for cleaning, beauty, repairs & more — 
+      delivered at your doorstep with guaranteed quality.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-5 animate-slide-up delay-300">
+
+      <a href="/services"
+        class="px-8 py-4 rounded-xl bg-white text-black font-semibold
+        hover:bg-gray-200 transition-all duration-300 shadow-xl hover:scale-105">
+        Book a Service
+      </a>
+
+      <a href="/technician"
+        class="px-8 py-4 rounded-xl border border-white/30
+        backdrop-blur-md bg-white/10
+        hover:bg-white/20 transition-all duration-300
+        font-semibold">
+        Join as a Technician
+      </a>
+
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-10 max-w-3xl mx-auto mt-20 text-white/80">
+
+      <div>
+        <p class="text-3xl font-bold text-white">4.8★</p>
+        <p class="text-sm mt-1">Average Rating</p>
+      </div>
+
+      <div>
+        <p class="text-3xl font-bold text-white">15K+</p>
+        <p class="text-sm mt-1">Monthly Bookings</p>
+      </div>
+
+      <div>
+        <p class="text-3xl font-bold text-white">100+</p>
+        <p class="text-sm mt-1">Verified Professionals</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- SHOWCASE / TRUST SECTION -->
+<section class="bg-gradient-to-b from-gray-50 to-white py-24">
+  <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
 
     <!-- LEFT CONTENT -->
     <div>
-      <h2 class="text-4xl font-bold leading-tight mb-6">
-        Home services at your <br class="hidden sm:block" />
-        doorstep
+      <span class="text-sm font-semibold text-gray-500 tracking-wide uppercase">
+        Trusted Home Service Platform
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-bold leading-tight mt-4 mb-6">
+        Professional home services <br class="hidden sm:block" />
+        delivered at your doorstep
       </h2>
 
-      <!-- Search Box (optional, matches hero vibe) -->
-      <div class="bg-white border rounded-xl p-4 shadow-sm mb-8">
-        <p class="text-sm text-gray-500 mb-3">
-          What are you looking for?
-        </p>
+      <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+        FixOra connects you with verified technicians for plumbing, electrical,
+        appliance repair, cleaning and more — all with transparent pricing
+        and real-time tracking.
+      </p>
 
-        <div class="flex flex-wrap gap-3">
-          <button
-            class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200 transition"
-          >
-            <i class="fas fa-water"></i>
-            Native Water Purifier
-          </button>
-
-          <button
-            class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200 transition"
-          >
-            <i class="fas fa-shopping-bag"></i>
-            Buy Native Products
-          </button>
-        </div>
+      <!-- SERVICE TAGS -->
+      <div class="flex flex-wrap gap-3 mb-10">
+        <span class="px-4 py-2 bg-white border rounded-full text-sm shadow-sm">
+          🔧 Appliance Repair
+        </span>
+        <span class="px-4 py-2 bg-white border rounded-full text-sm shadow-sm">
+          💡 Electrical Work
+        </span>
+        <span class="px-4 py-2 bg-white border rounded-full text-sm shadow-sm">
+          🚿 Plumbing
+        </span>
+        <span class="px-4 py-2 bg-white border rounded-full text-sm shadow-sm">
+          🧹 Deep Cleaning
+        </span>
       </div>
 
       <!-- STATS -->
-      <div class="flex gap-10">
-        <div class="flex items-center gap-3">
-          <div class="p-3 bg-gray-100 rounded-full">
-            ⭐
-          </div>
-          <div>
-            <p class="font-semibold">4.8</p>
-            <p class="text-sm text-gray-500">Service Rating</p>
-          </div>
+      <div class="grid grid-cols-3 gap-8">
+        <div>
+          <p class="text-3xl font-bold">4.8★</p>
+          <p class="text-sm text-gray-500 mt-1">Average Rating</p>
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="p-3 bg-gray-100 rounded-full">
-            👥
-          </div>
-          <div>
-            <p class="font-semibold">12M+</p>
-            <p class="text-sm text-gray-500">Customers Globally</p>
-          </div>
+        <div>
+          <p class="text-3xl font-bold">12M+</p>
+          <p class="text-sm text-gray-500 mt-1">Happy Customers</p>
+        </div>
+
+        <div>
+          <p class="text-3xl font-bold">50K+</p>
+          <p class="text-sm text-gray-500 mt-1">Verified Technicians</p>
         </div>
       </div>
     </div>
 
     <!-- RIGHT IMAGE GRID -->
-    <div class="grid grid-cols-2 gap-4">
-      <!-- Replace src with your own images -->
-      <img
-        src="https://plus.unsplash.com/premium_photo-1683121705485-e0c26875489e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        class="rounded-xl object-cover w-full h-full"
-        alt="Service Image 1"
-      />
+    <div class="relative">
+      <div class="grid grid-cols-2 gap-5">
+        <img
+          src="https://plus.unsplash.com/premium_photo-1683121705485-e0c26875489e?q=80&w=1170&auto=format&fit=crop"
+          class="rounded-2xl object-cover w-full h-60 shadow-md"
+          alt="Service Image 1"
+        />
 
-      <img
-        src="https://plus.unsplash.com/premium_photo-1683120897865-b09acb266810?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        class="rounded-xl object-cover w-full h-full"
-        alt="Service Image 2"
-      />
+        <img
+          src="https://plus.unsplash.com/premium_photo-1683120897865-b09acb266810?q=80&w=687&auto=format&fit=crop"
+          class="rounded-2xl object-cover w-full h-60 shadow-md mt-10"
+          alt="Service Image 2"
+        />
 
-      <img
-        src="https://plus.unsplash.com/premium_photo-1680297038160-89157d0c56d4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        class="rounded-xl object-cover w-full h-full col-span-1"
-        alt="Service Image 3"
-      />
+        <img
+          src="https://plus.unsplash.com/premium_photo-1680297038160-89157d0c56d4?q=80&w=687&auto=format&fit=crop"
+          class="rounded-2xl object-cover w-full h-60 shadow-md"
+          alt="Service Image 3"
+        />
 
-      <img
-        src="https://images.unsplash.com/photo-1749532125405-70950966b0e5?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        class="rounded-xl object-cover w-full h-full col-span-1"
-        alt="Service Image 4"
-      />
+        <img
+          src="https://images.unsplash.com/photo-1749532125405-70950966b0e5?q=80&w=1171&auto=format&fit=crop"
+          class="rounded-2xl object-cover w-full h-60 shadow-md mt-10"
+          alt="Service Image 4"
+        />
+      </div>
+
+      <!-- Floating Trust Badge -->
+      <div class="absolute -bottom-6 -left-6 bg-white shadow-xl rounded-xl p-4 border">
+        <p class="text-sm font-semibold">✔ 100% Verified Professionals</p>
+        <p class="text-xs text-gray-500">Background checked & trained</p>
+      </div>
     </div>
 
   </div>
 </section>
 
+<!-- PARTNER PROGRAM -->
+  <section class="py-20 bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900 text-white">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-14 items-center">
 
-  <!-- POPULAR SERVICES -->
-<section class="py-20">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="mb-10">
-      <h2 class="text-3xl font-semibold">Popular Services</h2>
-      <p class="text-gray-600 mt-1">
-        of our finest experiences
-      </p>
-    </div>
-
-    <div  class="flex gap-6 overflow-x-auto scroll-smooth
-    snap-x snap-mandatory no-scrollbar overscroll-x-contain touch-pan-x p-4"> 
-      <% 
-      const popularServices = [
-        { _id: 1, title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop", price:299 },
-        { _id: 1, title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop", price:399 },
-        { _id: 1, title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop", price:599 },
-        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop", price:199 },
-        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop", price:99 },
-        { _id: 1, title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop", price:299 },
-        { _id: 1, title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop", price:399 },
-        { _id: 1, title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop", price:599 },
-        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop", price:199 },
-        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop", price:99 },
-        { _id: 1, title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop", price:299 },
-        { _id: 1, title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop", price:399 },
-        { _id: 1, title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop", price:599 },
-        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop", price:199 },
-        { _id: 1, title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop", price:99 },
-      ];
-    %>
-
-    <!-- GRID SHOULD BE HERE -->
-  <% popularServices.forEach(ps => { %>
-
-<a href="<%= ps._id %>">
-  <div
-  class="relative min-w-[260px] rounded-2xl overflow-hidden
-  cursor-pointer shadow-sm hover:shadow-lg transition
-  snap-start"
->
-
-  <!-- Image -->
-  <div class="aspect-[4/5] bg-gray-100">
-    <img
-      src="<%= ps.image %>"
-      alt="<%= ps.title %>"
-      class="w-full h-full object-cover"
-    />
-  </div>
-
-  <!-- Content -->
-  <div class="p-4 space-y-2">
-
-    <!-- Title -->
-    <h3 class="text-base font-semibold leading-tight">
-      <%= ps.title %>
-    </h3>
-
-    <!-- Rating + Instant -->
-    <div class="flex items-center gap-2 text-sm text-gray-600">
-      <span class="flex items-center gap-1">
-        ⭐ <span class="font-medium">4.73</span>
+    <!-- LEFT CONTENT -->
+    <div>
+      <span class="inline-block mb-4 px-4 py-1.5
+        bg-white/20 text-sm font-medium rounded-full backdrop-blur">
+        🚀 Partner Program
       </span>
 
-      <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
-
-      <span class="flex items-center gap-1 text-green-600 font-medium">
-        ⚡ Instant
-      </span>
-    </div>
-
-    <!-- Price -->
-    <p class="text-sm font-medium">
-      ₹<%= ps.price %>
-    </p>
-
-  </div>
-</div>
-</a>
-
-
-  <% }); %>
-</div>
-</div>
-</section>
-
-
-  <!-- VIDEO PROOF / CURATIONS -->
-<section class="py-20 bg-white">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- Heading -->
-    <div class="mb-10">
-      <h2 class="text-3xl font-semibold">Thoughtful curations</h2>
-      <p class="text-gray-600 mt-1">
-        of our finest experiences
-      </p>
-    </div>
-
-    <!-- Video Slider -->
-    <div  class="flex gap-6 overflow-x-auto scroll-smooth
-  snap-x snap-mandatory
-  no-scrollbar
-  overscroll-x-contain touch-pan-x">
-
-      <% 
-        const videos = [
-          { title: 'Wall Panels', image:"https://plus.unsplash.com/premium_photo-1681491722984-1fb4e1b326bb?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",  video: 'videos/wall-panels.mp4' },
-          { title: 'Bathroom Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1683141366824-34b1e148f7bd?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",  video: 'videos/bathroom.mp4' },
-          { title: 'Kitchen Deep Cleaning', image:"https://plus.unsplash.com/premium_photo-1677686007410-eebf392e3fbd?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", video: 'videos/kitchen.mp4' },
-          { title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683121328013-f9efabdabde5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", video: 'videos/painting.mp4' },
-          { title: 'Painting & Waterproofing', image:"https://plus.unsplash.com/premium_photo-1683140911652-9eccabee148f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", video: 'videos/painting.mp4' },
-        ];
-      %>
-
-      <% videos.forEach(v => { %>
-        <div
-        class="relative min-w-[260px] h-[420px] rounded-2xl overflow-hidden
-  cursor-pointer group shadow-sm hover:shadow-lg transition
-  snap-start"
-  onclick="openVideo('<%= v.video %>')"
-        >
-
-          <img
-            src="<%= v.image %>"
-            alt="<%= v.title %>"
-            class="w-full h-full object-cover"
-          />
-
-          <!-- Dark overlay -->
-          <div class="absolute inset-0 bg-black/20"></div>
-
-          <!-- Play Button -->
-          <div
-            class="absolute inset-0 flex items-center justify-center"
-          >
-            <div
-              class="w-16 h-16 rounded-full bg-white/90
-              flex items-center justify-center
-              group-hover:scale-110 transition"
-            >
-              <i class="fas fa-play text-black ml-1"></i>
-            </div>
-          </div>
-
-          <!-- Title -->
-          <div class="absolute bottom-4 left-4 right-4">
-            <p class="text-white text-xl font-semibold leading-snug">
-              <%= v.title %>
-            </p>
-          </div>
-        </div>
-      <% }) %>
-
-    </div>
-  </div>
-</section>
-
-
-  <!-- APPLIANCE SERVICES -->
-<section class="py-10 bg-white">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
-      <h2 class="text-3xl font-semibold">
-        Appliance Service & Repair
+      <h2 class="text-4xl font-bold leading-tight mb-6">
+        Grow your service business <br />
+        with FixOra
       </h2>
 
-      <div class="flex items-center gap-3">
-        <a
-          href="/services/appliances"
-          class="hidden sm:inline-flex text-sm font-medium text-indigo-600 hover:underline"
-        >
-          See all
-        </a>
+      <p class="text-white/80 text-lg mb-8">
+        Join thousands of verified professionals earning consistent monthly income through our platform.
+        We handle marketing, bookings & payments — you focus on delivering quality service.
+      </p>
+
+      <div class="flex gap-6 mb-8">
+        <div>
+          <p class="text-2xl font-bold">50K+</p>
+          <p class="text-sm text-white/70">Monthly earning potential</p>
+        </div>
+
+        <div>
+          <p class="text-2xl font-bold">4.8★</p>
+          <p class="text-sm text-white/70">Average partner rating</p>
+        </div>
+
+        <div>
+          <p class="text-2xl font-bold">12M+</p>
+          <p class="text-sm text-white/70">Customer reach</p>
+        </div>
       </div>
+
+      <a
+        href="/technician"
+        class="inline-flex items-center gap-3
+        bg-white text-black px-8 py-3
+        rounded-xl font-semibold
+        hover:bg-gray-100 transition shadow-lg"
+      >
+        Apply Now
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- RIGHT CARD -->
+    <div class="bg-white/10 backdrop-blur-lg border border-white/20
+      rounded-3xl p-8 shadow-2xl">
+
+      <h3 class="text-xl font-semibold mb-6">
+        Why join FixOra?
+      </h3>
+
+      <div class="space-y-4 text-white/90 text-sm">
+
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400">✔</span>
+          <p>Zero commission for first 30 days</p>
+        </div>
+
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400">✔</span>
+          <p>Instant weekly payouts</p>
+        </div>
+
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400">✔</span>
+          <p>Verified customer base</p>
+        </div>
+
+        <div class="flex items-start gap-3">
+          <span class="text-slate-400">✔</span>
+          <p>In-app performance analytics dashboard</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- POPULAR SERVICES -->
+<section class="relative py-28 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+
+  <!-- Soft Background Glow -->
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-slate-200 rounded-full blur-3xl opacity-40"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-40"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6">
+
+    <!-- Section Header -->
+    <div class="flex items-end justify-between mb-14">
+
+      <div>
+        <span class="inline-block mb-4 px-4 py-1.5
+          bg-slate-50 text-slate-600 border border-slate-100 text-sm font-medium rounded-full">
+          🔥 Trending Now
+        </span>
+
+        <h2 class="text-4xl font-bold text-slate-900">
+          Popular Services
+        </h2>
+
+        <p class="text-slate-500 mt-2 text-lg">
+          Handpicked experiences loved by our customers
+        </p>
+      </div>
+
+      <a href="/services"
+        class="hidden md:inline-flex items-center gap-2
+        text-slate-600 font-medium hover:gap-3 transition-all">
+        View All
+        <i class="fas fa-arrow-right text-sm"></i>
+      </a>
+
+    </div>
+
+
+    <!-- Horizontal Scroll -->
+    <div class="flex gap-8 overflow-x-auto scroll-smooth
+      snap-x snap-mandatory no-scrollbar
+      overscroll-x-contain touch-pan-x pb-6">
+
+      <% popularServices.forEach(ps => { %>
+
+<a href="/services/<%= ps._id %>" class="snap-start group block">
+
+  <div class="relative min-w-[300px] bg-white
+    rounded-3xl overflow-hidden
+    border border-slate-200/80
+    shadow-sm hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)]
+    transition-all duration-500 hover:-translate-y-3">
+
+    <!-- IMAGE -->
+    <div class="relative aspect-[4/5] overflow-hidden">
+
+      <img
+        src="<%= ps.image && ps.image[0].url || '/images/placeholder.png' %>"
+        alt="<%= ps.name %>"
+        class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+      />
+
+      <!-- LUXURY OVERLAY -->
+      <div class="absolute inset-0 bg-gradient-to-t
+        from-black/70 via-black/20 to-transparent">
+      </div>
+
+      <!-- GLASS RATING BADGE -->
+      <div class="absolute top-4 left-4
+        flex items-center gap-1
+        bg-white/90 backdrop-blur-xl
+        text-xs font-semibold
+        px-3 py-1.5 rounded-full shadow-lg">
+
+        <i class="fa-solid fa-star text-yellow-400"></i>
+        <span><%= ps.avgRating || "4.8" %></span>
+
+      </div>
+
+      <!-- OPTIONAL INSTANT TAG -->
+      <% if(ps.instant){ %>
+      <div class="absolute top-4 right-4">
+        <span class="flex items-center gap-1 text-[11px] font-semibold
+          px-3 py-1.5 bg-emerald-500 text-white
+          rounded-full shadow-lg">
+
+          <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+          Instant
+        </span>
+      </div>
+      <% } %>
+
+      <!-- BOTTOM INFO REVEAL -->
+      <div class="absolute bottom-0 left-0 right-0 p-5
+        translate-y-6 group-hover:translate-y-0
+        transition duration-500">
+
+        <h3 class="text-white text-xl font-semibold drop-shadow">
+          <%= ps.name %>
+        </h3>
+
+        <!-- CTA BUTTON -->
+        <div class="mt-3 opacity-0 group-hover:opacity-100 transition duration-500">
+          <span class="inline-flex items-center gap-2
+            text-sm font-medium
+            px-4 py-2 rounded-xl
+            bg-white text-slate-900
+            shadow hover:bg-indigo-600 hover:text-white transition">
+
+            View Service
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SOFT GLOW BORDER -->
+    <div class="absolute inset-0 rounded-3xl
+      bg-gradient-to-r from-indigo-500 to-purple-500
+      opacity-0 group-hover:opacity-10
+      transition duration-500 pointer-events-none">
+    </div>
+
+  </div>
+
+</a>
+
+<% }); %>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- APPLIANCE SERVICES - PREMIUM VERSION -->
+<section class="relative py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+
+  <!-- Subtle background glow -->
+  <div class="absolute -top-24 -right-24 w-80 h-80 bg-slate-100 rounded-full blur-3xl opacity-40"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6">
+
+    <!-- Header -->
+    <div class="flex items-end justify-between mb-12">
+
+      <div>
+        <span class="inline-flex items-center px-4 py-1.5 rounded-full
+          bg-slate-50 text-slate-600 text-sm font-medium mb-4">
+          🔧 Expert Repairs
+        </span>
+
+        <h2 class="text-4xl font-bold text-slate-900 leading-tight">
+          Appliance Service & Repair
+        </h2>
+
+        <p class="text-slate-500 mt-2 max-w-lg">
+          Certified professionals for installation, maintenance & repair.
+        </p>
+      </div>
+
+      <a
+        href="/services/appliances"
+        class="hidden sm:inline-flex items-center gap-2
+        text-sm font-semibold text-slate-600
+        hover:text-slate-800 transition"
+      >
+        See all →
+      </a>
+
     </div>
 
     <!-- Slider -->
     <div
       id="applianceSlider"
-      class="flex gap-6 overflow-x-auto scroll-smooth
+      class="flex gap-8 overflow-x-auto scroll-smooth
       snap-x snap-mandatory
       no-scrollbar
-      overscroll-x-contain touch-pan-x"
+      overscroll-x-contain touch-pan-x pb-6"
     >
-      <% 
-        const appliances = [
-          'AC',
-          'Washing Machine',
-          'Geyser',
-          'Laptop',
-          'Television',
-          'Refrigerator',
-          'Microwave',
-          'Water Purifier'
-        ];
-      %>
+      <% appliances.forEach(appliance => { %>
 
-      <% appliances.forEach(name => { %>
+      <div
+        class="relative min-w-[240px] rounded-3xl
+        bg-white/70 backdrop-blur-md
+        border border-slate-200
+        shadow-sm hover:shadow-xl
+        transition-all duration-500
+        hover:-translate-y-2
+        cursor-pointer snap-start group"
+      >
+
+        <!-- Glow Border on Hover -->
+        <div class="absolute inset-0 rounded-3xl
+          border border-transparent
+          group-hover:border-slate-300/50
+          transition duration-500">
+        </div>
+
+        <!-- Image Area -->
         <div
-          class="min-w-[220px] bg-white border rounded-2xl
-          hover:shadow-md transition cursor-pointer"
+          class="h-44 rounded-t-3xl
+          bg-gradient-to-b from-white to-slate-50
+          flex items-center justify-center overflow-hidden"
         >
-          <div
-            class="h-40 rounded-t-2xl bg-gradient-to-b from-white to-emerald-50
-            flex items-center justify-center"
-          >
-            <!-- Replace image later -->
-            <img
-              src="/assets/placeholder.png"
-              alt="<%= name %>"
-              class="h-28 object-contain"
-            />
-          </div>
 
-          <div class="p-4">
-            <p class="font-medium text-center"><%= name %></p>
-          </div>
+          <img
+            src="<%= appliance.image && appliance.image[0].url || '/images/placeholder.png' %>"
+            alt="<%= appliance.name %>"
+            class="h-28 object-contain
+            transition duration-500
+            group-hover:scale-110"
+          />
+
         </div>
+
+        <!-- Content -->
+        <div class="p-6 text-center">
+
+          <p class="font-semibold text-lg text-slate-800
+            group-hover:text-slate-600 transition">
+            <%= appliance.name %>
+          </p>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Repair & Service
+          </p>
+
+        </div>
+
+        <!-- Soft bottom gradient accent -->
+        <div class="absolute bottom-0 left-0 right-0 h-1
+          bg-gradient-to-r from-slate-400 to-purple-400
+          rounded-b-3xl opacity-0 group-hover:opacity-100
+          transition duration-500">
+        </div>
+
+      </div>
+
       <% }) %>
+
     </div>
 
   </div>
 </section>
 
-<!-- FIRST PROMOTIONAL BANNER -->
-<section class="py-10">
-  <div
-    class="max-w-7xl mx-auto px-6"
-  >
-    <div
-      class="relative overflow-hidden rounded-3xl
-      bg-gradient-to-r from-slate-900 via-slate-800 to-black
-      text-white"
-    >
-      <!-- Background Image (optional, replace later) -->
-      <img
-        src="/assets/promo-bg.jpg"
-        alt="Promotion Background"
-        class="absolute inset-0 w-full h-full object-cover opacity-40"
-      />
+<!-- PREMIUM MEMBERSHIP CTA -->
+<section class="relative py-24 bg-slate-900 text-white overflow-hidden">
 
-      <div
-        class="relative z-10 grid md:grid-cols-2 gap-10
-        items-center px-10 py-14"
-      >
-        <!-- LEFT CONTENT -->
-        <div>
-          <!-- Discount Badge -->
-          <span
-            class="inline-block mb-4 px-4 py-1.5
-            bg-emerald-600 text-sm font-medium rounded-full"
-          >
-            Up to ₹2,800 off
-          </span>
+  <!-- glowing blobs -->
+  <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-600 rounded-full blur-3xl opacity-20"></div>
+  <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-600 rounded-full blur-3xl opacity-20"></div>
 
-          <!-- Brand -->
-          <p class="tracking-widest text-sm text-gray-300 mb-3">
-            NATIVE
-          </p>
+  <div class="relative max-w-6xl mx-auto px-6 text-center">
 
-          <!-- Heading -->
-          <h2 class="text-4xl font-bold mb-4 leading-tight">
-            Smart locks
-          </h2>
+    <!-- badge -->
+    <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full
+      bg-white/10 backdrop-blur border border-white/20
+      text-sm font-medium mb-6 animate-pulse">
+      ⭐ FixOra Premium Membership
+    </span>
 
-          <!-- Subtext -->
-          <p class="text-gray-300 text-lg mb-8">
-            Camera. Doorbell. All-in one.
-          </p>
+    <!-- title -->
+    <h2 class="text-4xl md:text-5xl font-bold leading-tight">
+      Get Unlimited Home Services  
+      <span class="bg-gradient-to-r from-yellow-300 to-orange-400
+      bg-clip-text text-transparent">
+        Without the Stress
+      </span>
+    </h2>
 
-          <!-- CTA -->
-          <a
-            href="/products/smart-locks"
-            class="inline-block bg-white text-black
-            px-8 py-3 rounded-xl font-medium
-            hover:bg-gray-100 transition"
-          >
-            Buy now
-          </a>
-        </div>
+    <!-- subtitle -->
+    <p class="text-slate-300 mt-5 max-w-2xl mx-auto text-lg">
+      Priority booking, faster technician arrival, and discounted repairs.  
+      Choose monthly, 6-month, or yearly plans and enjoy worry-free service.
+    </p>
 
-        <!-- RIGHT IMAGE -->
-        <div class="relative flex justify-center md:justify-end">
-          <!-- Replace image later -->
-          <img
-            src="/assets/smart-lock.png"
-            alt="Smart Lock"
-            class="max-h-[420px] object-contain drop-shadow-2xl"
-          />
-        </div>
+    <!-- features -->
+    <div class="grid sm:grid-cols-3 gap-6 mt-12 text-sm">
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur hover:bg-white/10 transition">
+        ⚡ 1-Hour Priority Service
       </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur hover:bg-white/10 transition">
+        🔧 Unlimited Repairs*
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur hover:bg-white/10 transition">
+        💸 Exclusive Member Discounts
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <a href="/services/premium"
+      class="inline-flex items-center gap-3 mt-12
+      px-10 py-4 rounded-2xl
+      bg-slate-200
+      hover:bg-slate-100
+      text-black font-semibold text-lg
+      shadow-2xl hover:shadow-indigo-500/40
+      hover:scale-105 transition duration-300">
+
+      Explore Premium Plans →
+    </a>
+
+    <!-- tiny note -->
+    <p class="text-xs text-slate-400 mt-4">
+      *Fair usage policy applies
+    </p>
+
+  </div>
+
+</section>
+
+
+<section class="py-24">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="relative overflow-hidden rounded-3xl">
+
+      <!-- SLIDER WRAPPER -->
+      <div id="promoSlider" class="relative">
+
+        <% 
+        const promotions = [
+          {
+            badge: "Up to ₹2,800 off",
+            brand: "NATIVE",
+            title: "Smart Locks",
+            desc: "Camera. Doorbell. All-in one.",
+            link: "/products/smart-locks",
+            image: "https://res.cloudinary.com/urbanclap/image/upload/t_high_res_template/w_1232,dpr_2,fl_progressive:steep,q_auto:low,f_auto,c_limit/images/growth/luminosity/1736922795409-bece35.jpeg"
+          },
+          {
+            badge: "Flat 40% Off",
+            brand: "FIXORA",
+            title: "AC Deep Cleaning",
+            desc: "Stay cool this summer.",
+            link: "/services/ac-cleaning",
+            image: "https://res.cloudinary.com/urbanclap/image/upload/t_high_res_template/w_1232,dpr_2,fl_progressive:steep,q_auto:low,f_auto,c_limit/images/supply/customer-app-supply/1770616334039-56c180.jpeg"
+          },
+          {
+            badge: "Save ₹1,500",
+            brand: "HOME+",
+            title: "Kitchen Deep Clean",
+            desc: "Sparkling clean kitchens.",
+            link: "/services/kitchen-cleaning",
+            image: "https://res.cloudinary.com/urbanclap/image/upload/t_high_res_template/w_1232,dpr_2,fl_progressive:steep,q_auto:low,f_auto,c_limit/images/growth/luminosity/1735893886310-6dbc53.jpeg"
+          },
+          {
+            badge: "Limited Offer",
+            brand: "PRO CARE",
+            title: "Water Purifier Service",
+            desc: "Pure water, pure life.",
+            link: "/services/water-purifier",
+            image: "https://res.cloudinary.com/urbanclap/image/upload/t_high_res_template/w_1232,dpr_2,fl_progressive:steep,q_auto:low,f_auto,c_limit/images/supply/customer-app-supply/1770403984942-43698d.jpeg"
+          },
+          {
+            badge: "Best Seller",
+            brand: "TECH+",
+            title: "Laptop Repair",
+            desc: "Fast & certified service.",
+            link: "/services/laptop",
+            image: "/assets/laptop.png"
+          }
+        ];
+        %>
+
+        <% promotions.forEach((p, index) => { %>
+        <div class="promo-slide absolute inset-0 transition-all duration-700 ease-in-out <%= index === 0 ? 'opacity-100 translate-x-0 relative' : 'opacity-0 translate-x-10' %>">
+
+          <div class="relative overflow-hidden rounded-3xl
+            bg-gradient-to-r from-slate-900 via-slate-800 to-black
+            text-white">
+
+            <!-- Background -->
+            <img
+              src="<%= p.image %>"
+              class="absolute inset-0 w-full h-full object-cover opacity-40"
+            />
+
+            <div class="relative z-10 grid md:grid-cols-2 gap-10
+              items-center px-10 py-14">
+
+              <!-- LEFT -->
+              <div>
+                <span class="inline-block mb-4 px-4 py-1.5
+                  bg-emerald-600 text-sm font-medium rounded-full">
+                  <%= p.badge %>
+                </span>
+
+                <p class="tracking-widest text-sm text-gray-300 mb-3">
+                  <%= p.brand %>
+                </p>
+
+                <h2 class="text-4xl font-bold mb-4 leading-tight">
+                  <%= p.title %>
+                </h2>
+
+                <p class="text-gray-300 text-lg mb-8">
+                  <%= p.desc %>
+                </p>
+
+                <a href="<%= p.link %>"
+                  class="inline-block bg-white text-black
+                  px-8 py-3 rounded-xl font-medium
+                  hover:bg-gray-100 transition">
+                  Buy now
+                </a>
+              </div>
+
+              <!-- RIGHT -->
+              <div class="flex justify-center md:justify-end">
+                <img
+                  src="<%= p.image %>"
+                  class="max-h-[420px] object-contain drop-shadow-2xl
+                  transition duration-700 hover:scale-105"
+                />
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <% }) %>
+
+      </div>
+
+      <!-- INDICATORS -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+        <% promotions.forEach((_, i) => { %>
+          <div class="indicator w-3 h-3 rounded-full bg-white/40"></div>
+        <% }) %>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- SECOND PROMOTIONAL BANNER -->
-<section class="py-10">
-  <div
-    class="max-w-7xl mx-auto px-6"
-  >
-    <div
-      class="relative overflow-hidden rounded-3xl
-      bg-gradient-to-r from-slate-900 via-slate-800 to-black
-      text-white"
-    >
-      <!-- Background Image (optional, replace later) -->
-      <img
-        src="/assets/promo-bg.jpg"
-        alt="Promotion Background"
-        class="absolute inset-0 w-full h-full object-cover opacity-40"
-      />
 
-      <div
-        class="relative z-10 grid md:grid-cols-2 gap-10
-        items-center px-10 py-14"
-      >
-        <!-- LEFT CONTENT -->
-        <div>
-          <!-- Discount Badge -->
-          <span
-            class="inline-block mb-4 px-4 py-1.5
-            bg-emerald-600 text-sm font-medium rounded-full"
-          >
-            Up to ₹2,800 off
-          </span>
+<!-- WHY US - PREMIUM VERSION -->
+<section class="relative py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
 
-          <!-- Brand -->
-          <p class="tracking-widest text-sm text-gray-300 mb-3">
-            NATIVE
-          </p>
+  <!-- Background soft glow -->
+  <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-slate-100 rounded-full blur-3xl opacity-30"></div>
 
-          <!-- Heading -->
-          <h2 class="text-4xl font-bold mb-4 leading-tight">
-            Smart locks
-          </h2>
+  <div class="relative max-w-7xl mx-auto px-6">
 
-          <!-- Subtext -->
-          <p class="text-gray-300 text-lg mb-8">
-            Camera. Doorbell. All-in one.
-          </p>
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <span class="inline-flex items-center px-4 py-1.5 rounded-full
+        bg-slate-50 text-slate-600 text-sm font-medium mb-5">
+        Why Choose Us
+      </span>
 
-          <!-- CTA -->
-          <a
-            href="/products/smart-locks"
-            class="inline-block bg-white text-black
-            px-8 py-3 rounded-xl font-medium
-            hover:bg-gray-100 transition"
-          >
-            Buy now
-          </a>
-        </div>
+      <h2 class="text-4xl font-bold text-slate-900 mb-4">
+        Trusted by Thousands of Homes
+      </h2>
 
-        <!-- RIGHT IMAGE -->
-        <div class="relative flex justify-center md:justify-end">
-          <!-- Replace image later -->
-          <img
-            src="/assets/smart-lock.png"
-            alt="Smart Lock"
-            class="max-h-[420px] object-contain drop-shadow-2xl"
-          />
-        </div>
-      </div>
+      <p class="text-slate-500 max-w-xl mx-auto">
+        We combine expert professionals, transparent pricing, and reliable support
+        to deliver premium home service experiences.
+      </p>
     </div>
+
+    <!-- Features Grid -->
+    <div class="grid md:grid-cols-3 gap-10">
+
+      <!-- CARD 1 -->
+      <div class="group relative p-8 rounded-3xl
+        bg-white/70 backdrop-blur-md
+        border border-slate-200
+        shadow-sm hover:shadow-xl
+        transition-all duration-500
+        hover:-translate-y-2">
+
+        <div class="w-14 h-14 rounded-2xl
+          bg-gradient-to-tr from-slate-500 to-purple-500
+          flex items-center justify-center
+          text-white text-xl mb-6
+          group-hover:scale-110 transition">
+          ✓
+        </div>
+
+        <h3 class="font-semibold text-xl mb-3 text-slate-900">
+          Verified Experts
+        </h3>
+
+        <p class="text-slate-500">
+          Background-checked professionals trained to deliver safe and high-quality service.
+        </p>
+
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="group relative p-8 rounded-3xl
+        bg-white/70 backdrop-blur-md
+        border border-slate-200
+        shadow-sm hover:shadow-xl
+        transition-all duration-500
+        hover:-translate-y-2">
+
+        <div class="w-14 h-14 rounded-2xl
+          bg-gradient-to-tr from-emerald-500 to-teal-500
+          flex items-center justify-center
+          text-white text-xl mb-6
+          group-hover:scale-110 transition">
+          ₹
+        </div>
+
+        <h3 class="font-semibold text-xl mb-3 text-slate-900">
+          Transparent Pricing
+        </h3>
+
+        <p class="text-slate-500">
+          Clear upfront pricing with no hidden charges or surprise costs.
+        </p>
+
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="group relative p-8 rounded-3xl
+        bg-white/70 backdrop-blur-md
+        border border-slate-200
+        shadow-sm hover:shadow-xl
+        transition-all duration-500
+        hover:-translate-y-2">
+
+        <div class="w-14 h-14 rounded-2xl
+          bg-gradient-to-tr from-pink-500 to-orange-500
+          flex items-center justify-center
+          text-white text-xl mb-6
+          group-hover:scale-110 transition">
+          24/7
+        </div>
+
+        <h3 class="font-semibold text-xl mb-3 text-slate-900">
+          Quick Support
+        </h3>
+
+        <p class="text-slate-500">
+          24×7 customer assistance to ensure a smooth and worry-free experience.
+        </p>
+
+      </div>
+
+    </div>
+
   </div>
 </section>
 
-  <!-- WHY US -->
-  <section class="bg-white py-16">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
-      <div>
-        <h3 class="font-semibold text-lg mb-2">Verified Experts</h3>
-        <p class="text-gray-600 text-sm">Background-checked professionals</p>
-      </div>
-      <div>
-        <h3 class="font-semibold text-lg mb-2">Transparent Pricing</h3>
-        <p class="text-gray-600 text-sm">No hidden charges</p>
-      </div>
-      <div>
-        <h3 class="font-semibold text-lg mb-2">Quick Support</h3>
-        <p class="text-gray-600 text-sm">24×7 customer assistance</p>
-      </div>
-    </div>
-  </section>
 </main>
-<!-- Main -->
+
 
 <!-- Footer -->
-<footer class="bg-gray-100 mt-20">
-  <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-10">
-
-    <!-- Company -->
-    <div>
-      <h4 class="font-semibold mb-4">FixOraServices</h4>
-      <ul class="space-y-2 text-sm text-gray-600">
-        <li><a href="/about">About us</a></li>
-        <li><a href="/career">Careers</a></li>
-        <li><a href="/terms">Terms & Conditions</a></li>
-        <li><a href="/privacy">Privacy Policy</a></li>
-      </ul>
-    </div>
-
-    <!-- Customers -->
-    <div>
-      <h4 class="font-semibold mb-4">For Customers</h4>
-      <ul class="space-y-2 text-sm text-gray-600">
-        <li>Categories near you</li>
-        <li><a href="/reviews">Reviews</a></li>
-        <li><a href="/contact">Contact us</a></li>
-      </ul>
-    </div>
-
-    <!-- Professionals -->
-    <div>
-      <h4 class="font-semibold mb-4">For Professionals</h4>
-      <ul class="space-y-2 text-sm text-gray-600">
-        <li><a href="/register">Register as a professional</a></li>
-      </ul>
-    </div>
-
-    <!-- Social -->
-    <div>
-      <h4 class="font-semibold mb-4">Social</h4>
-      <div class="flex gap-3">
-        <span class="p-2 bg-white rounded-full shadow">🐦</span>
-        <span class="p-2 bg-white rounded-full shadow">📘</span>
-        <span class="p-2 bg-white rounded-full shadow">📸</span>
-        <span class="p-2 bg-white rounded-full shadow">🔗</span>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="border-t text-center text-sm text-gray-500 py-6">
-    © 2026 FixOraServices. All rights reserved.
-  </div>
-</footer>
-<!-- Footer -->
-
-
-
-<!-- LOGIN MODAL -->
-<div
-  id="loginModal"
-  class="fixed inset-0 z-50 hidden items-center justify-center"
->
-  <!-- Backdrop -->
-  <div
-    class="absolute inset-0 bg-black/40 backdrop-blur-sm"
-    id="loginBackdrop"
-  ></div>
-
-  <!-- Modal Box -->
-  <div
-    id="loginBox"
-  class="relative bg-white w-full max-w-md mt-6 mr-6 rounded-2xl shadow-xl
-  p-6 transform translate-y-2 opacity-0 transition-all duration-200"
-  >
-    <!-- Close -->
-    <button
-      id="closeLoginModal"
-      class="absolute top-4 right-4 text-gray-400 hover:text-black"
-    >
-      <i  class="w-5 h-5 fas fa-times"></i>
-    </button>
-
-    <!-- Content -->
-    <h2 class="text-xl font-semibold mb-1">Login</h2>
-    <p class="text-sm text-gray-500 mb-6">
-      Enter your phone number to continue
-    </p>
-
-    <!-- Phone Input -->
-    <form id="loginForm" method="POST" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium mb-1">
-          Phone Number
-        </label>
-        <div class="flex gap-2">
-          <span class="flex items-center px-3 border rounded-lg bg-gray-50 text-sm">
-            +91
-          </span>
-          <input
-            name="phone"
-            type="tel"
-            maxlength="10"
-            placeholder="Enter 10 digit number"
-            class="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
-            required
-          />
-        </div>
-      </div>
-
-      <button
-  id="loginSubmitBtn"
-  type="submit"
-  class="w-full py-2.5 bg-black text-white rounded-lg
-         hover:bg-gray-900 transition font-medium
-         flex items-center justify-center gap-2"
->
-  <span id="loginBtnText">Continue</span>
-
-  <!-- Spinner -->
-  <svg
-    id="loginSpinner"
-    class="hidden w-5 h-5 animate-spin text-white"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <circle
-      class="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      stroke-width="4"
-    ></circle>
-    <path
-      class="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-    ></path>
-  </svg>
-</button>
-    </form>
-
-    <!-- Footer -->
-    <p class="text-xs text-gray-500 mt-4 text-center">
-      By continuing, you agree to our
-      <a href="#" class="underline">Terms</a> &
-      <a href="#" class="underline">Privacy Policy</a>
-    </p>
-  </div>
-</div>
-
-
-<!-- OTP VERIFY MODAL -->
-<div
-  id="otpModal"
-  class="fixed inset-0 z-50 hidden items-center justify-center"
->
-  <!-- Backdrop -->
-  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-
-  <!-- Modal Box -->
-  <div
-    class="relative bg-white w-full max-w-md rounded-2xl shadow-xl p-6"
-  >
-    <!-- Close -->
-    <button
-      onclick="closeOtpModal()"
-      class="absolute top-4 right-4 text-gray-400 hover:text-black"
-    >
-      <i class="fas fa-times"></i>
-    </button>
-
-    <!-- Header -->
-    <div class="flex items-center gap-3 mb-4">
-      <div class="p-2 bg-blue-100 rounded-lg">📱</div>
-      <h2 class="text-xl font-semibold">Enter verification code</h2>
-    </div>
-
-    <p class="text-sm text-gray-500 mb-6">
-      A 6-digit verification code has been sent to
-      <span class="font-medium" id="otpPhoneText"></span>
-    </p>
-
-    <!-- OTP INPUTS -->
-<div class="flex gap-3 justify-center mb-6">
-  <% for (let i = 0; i < 6; i++) { %>
-    <input
-      maxlength="1"
-      inputmode="numeric"
-      class="otp-input w-12 h-12 text-center border rounded-lg
-             text-lg font-semibold focus:ring-2 focus:ring-black
-             focus:outline-none"
-    />
-  <% } %>
-</div>
-
-
-
-    <!-- TIMER / RESEND -->
-    <div class="text-center text-sm text-gray-600 mb-4">
-      <span id="otpTimer">02:00</span>
-      <button
-  id="resendOtpBtn"
-  onclick="resendOtp()"
-  class="hidden text-blue-600 font-medium hover:underline"
->
-  Resend OTP
-</button>
-    </div>
-
-    <!-- VERIFY -->
-    <button
-      onclick="verifyOtp()"
-      class="w-full py-2.5 bg-black text-white rounded-lg
-      hover:bg-gray-900 transition font-medium"
-    >
-      Verify & Login
-    </button>
-  </div>
-</div>
-
-
-<!-- VIDEO MODAL -->
-<div
-  id="videoModal"
-  class="fixed inset-0 z-50 hidden items-center justify-center"
->
-  <!-- Backdrop -->
-  <div
-    class="absolute inset-0 bg-black/70"
-    onclick="closeVideo()"
-  ></div>
-
-  <!-- Video Container -->
-  <div
-    class="relative z-10 w-full max-w-4xl px-4
-    max-h-[85vh] flex items-center justify-center"
-  >
-    <!-- Video Wrapper (keeps aspect ratio) -->
-    <div class="w-full aspect-video">
-      <video
-        id="videoPlayer"
-        controls
-        autoplay
-        class="w-full h-full rounded-2xl bg-black object-contain"
-      ></video>
-    </div>
-
-    <!-- Close Button -->
-    <button
-      onclick="closeVideo()"
-      class="absolute -top-12 right-6 text-white text-2xl
-      hover:opacity-80 transition"
-    >
-      ✕
-    </button>
-  </div>
-</div>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  // Login modal
-  const loginModal = document.getElementById("loginModal");
-  const loginBox = document.getElementById("loginBox");
-  const openLoginBtn = document.getElementById("openLoginModal");
-  const closeLoginBtn = document.getElementById("closeLoginModal");
-  const loginBackdrop = document.getElementById("loginBackdrop");
-  const loginForm = document.getElementById("loginForm");
-
-  // Login loader
-  const loginSubmitBtn = document.getElementById("loginSubmitBtn");
-  const loginBtnText = document.getElementById("loginBtnText");
-  const loginSpinner = document.getElementById("loginSpinner");
-
-  // OTP modal
-  const otpModal = document.getElementById("otpModal");
-  const otpPhoneText = document.getElementById("otpPhoneText");
-  const otpTimerEl = document.getElementById("otpTimer");
-  const resendOtpBtn = document.getElementById("resendOtpBtn");
-
-  // Profile dropdown
-  const profileBtn = document.getElementById("profileBtn");
-  const profileDropdown = document.getElementById("profileDropdown");
-
-  // Video modal
-  const videoModal = document.getElementById("videoModal");
-  const videoPlayer = document.getElementById("videoPlayer");
-
-  let otpTimer = null;
-  let remainingSeconds = 120;
-  let currentPhone = "";
-  let dropdownOpen = false;
-
-
-
-  function openLoginModal() {
-    loginModal.classList.remove("hidden");
-    loginModal.classList.add("flex");
-
-    requestAnimationFrame(() => {
-      loginBox.classList.remove("translate-y-2", "opacity-0");
-      loginBox.classList.add("translate-y-0", "opacity-100");
-    });
-  }
-
-  function closeLoginModal() {
-    loginBox.classList.add("translate-y-2", "opacity-0");
-    loginBox.classList.remove("translate-y-0", "opacity-100");
-
-    setTimeout(() => {
-      loginModal.classList.add("hidden");
-      loginModal.classList.remove("flex");
-    }, 200);
-  }
-
-  openLoginBtn?.addEventListener("click", openLoginModal);
-  closeLoginBtn?.addEventListener("click", closeLoginModal);
-  loginBackdrop?.addEventListener("click", closeLoginModal);
-
-  function setLoginLoading(loading) {
-    loginSubmitBtn.disabled = loading;
-    loginBtnText.innerText = loading ? "Sending OTP…" : "Continue";
-    loginSpinner.classList.toggle("hidden", !loading);
-  }
-
-  loginForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const phone = loginForm.phone.value.trim();
-    if (phone.length !== 10) {
-      showToast("error", "Enter valid phone number");
-      return;
-    }
-
-    setLoginLoading(true);
-
-    try {
-      const res = await fetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-
-      showToast("success", data.message);
-      closeLoginModal();
-      setTimeout(() => openOtpModal(phone), 250);
-
-    } catch (err) {
-      showToast("error", err.message || "Login failed");
-    } finally {
-      setLoginLoading(false);
-    }
-  });
-
-
-  function openOtpModal(phone) {
-    currentPhone = phone;
-    otpPhoneText.innerText = `+91 ${phone}`;
-
-    otpModal.classList.remove("hidden");
-    otpModal.classList.add("flex");
-
-    setupOtpInputs();
-    startOtpTimer();
-  }
-
-  // Close otp model
-  window.closeOtpModal = () => {
-    otpModal.classList.add("hidden");
-    otpModal.classList.remove("flex");
-    clearInterval(otpTimer);
-  };
-
-  function setupOtpInputs() {
-    const inputs = document.querySelectorAll(".otp-input");
-
-    inputs.forEach((input, i) => {
-      input.value = "";
-
-      input.oninput = () => {
-        input.value = input.value.replace(/\D/g, "");
-        if (input.value && i < inputs.length - 1) inputs[i + 1].focus();
-      };
-
-      input.onkeydown = (e) => {
-        if (e.key === "Backspace" && !input.value && i > 0) {
-          inputs[i - 1].focus();
-        }
-      };
-    });
-
-    inputs[0]?.focus();
-  }
-
-  // Start otp timer
-  function startOtpTimer() {
-    clearInterval(otpTimer);
-    remainingSeconds = 120;
-    resendOtpBtn.classList.add("hidden");
-
-    otpTimer = setInterval(() => {
-      remainingSeconds--;
-      const m = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
-      const s = String(remainingSeconds % 60).padStart(2, "0");
-      otpTimerEl.innerText = `${m}:${s}`;
-
-      if (remainingSeconds <= 0) {
-        clearInterval(otpTimer);
-        otpTimerEl.innerText = "";
-        resendOtpBtn.classList.remove("hidden");
-      }
-    }, 1000);
-  }
-
-  // Resend otp
-  window.resendOtp = async () => {
-    try {
-      const res = await fetch("/auth/resend-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: currentPhone }),
-      });
-
-      if (!res.ok) throw new Error();
-      showToast("success", "OTP resent");
-      startOtpTimer();
-    } catch {
-      showToast("error", "Failed to resend OTP");
-    }
-  };
-
-  // Verify otp
-  window.verifyOtp = async () => {
-    const otp = [...document.querySelectorAll(".otp-input")]
-      .map(i => i.value)
-      .join("");
-
-    if (otp.length !== 6) {
-      showToast("error", "Enter valid OTP");
-      return;
-    }
-
-    try {
-      const res = await fetch("/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: currentPhone, otp }),
-      });
-
-      if (!res.ok) throw new Error();
-      location.reload();
-    } catch {
-      showToast("error", "Invalid OTP");
-    }
-  };
-
-  /* =======================
-     PROFILE DROPDOWN
-  ======================= */
-
-  profileBtn?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdownOpen = !dropdownOpen;
-
-    profileDropdown.classList.toggle("opacity-0", !dropdownOpen);
-    profileDropdown.classList.toggle("scale-95", !dropdownOpen);
-    profileDropdown.classList.toggle("pointer-events-none", !dropdownOpen);
-  });
-
-  document.addEventListener("click", () => {
-    dropdownOpen = false;
-    profileDropdown.classList.add("opacity-0", "scale-95", "pointer-events-none");
-  });
-
-
-  window.openVideo = (src) => {
-    videoPlayer.src = src;
-    videoModal.classList.remove("hidden");
-    videoModal.classList.add("flex");
-    videoPlayer.play();
-  };
-
-  window.closeVideo = () => {
-    videoPlayer.pause();
-    videoPlayer.src = "";
-    videoModal.classList.add("hidden");
-    videoModal.classList.remove("flex");
-  };
-
-  /* =======================
-     GLOBAL ESC HANDLER
-  ======================= */
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeLoginModal();
-      closeOtpModal();
-      closeVideo();
-    }
-  });
-
-});
-</script>
-
+<%- include("../partials/client/footer.ejs") %>
+
+<!-- Get Location -->
+<%- include("../partials/client/getlocation.ejs") %>
+<!-- Profile Script -->
+<%- include("../partials/client/profile-script.ejs") %>
 <!-- Toast script -->
 <%- include("../partials/toast-script.ejs") %>
 </body>

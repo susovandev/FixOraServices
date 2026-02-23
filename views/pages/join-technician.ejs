@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Join as Technician | FixOra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .input {
+        width: 100%;
+        margin-top: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 14px;
+        outline: none;
+      }
+      .input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+      }
+
+      .input-file {
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+
+  <body class="bg-slate-50 text-slate-800">
+    <%- include("../partials/toast.ejs") %>
+    <!-- ================= HERO SECTION ================= -->
+    <section class="bg-white border-b border-slate-200">
+      <div class="max-w-6xl mx-auto px-6 py-16 text-center">
+        <h1 class="text-4xl font-bold text-slate-900 mb-4">Become a FixOra Technician</h1>
+
+        <p class="text-slate-600 max-w-2xl mx-auto">
+          Grow your income. Get verified customers. Work on your schedule. Join thousands of trusted
+          professionals.
+        </p>
+
+        <div class="mt-10 flex justify-center gap-12 text-sm text-slate-600">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-wallet text-indigo-600"></i> Weekly Payouts
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-user-check text-indigo-600"></i> Verified Customers
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-clock text-indigo-600"></i> Flexible Schedule
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FORM SECTION ================= -->
+    <section class="py-16">
+      <div class="max-w-3xl mx-auto px-6">
+        <!-- Card -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <!-- Step Indicator -->
+          <div class="mb-10">
+            <div class="w-full bg-slate-200 h-2 rounded-full">
+              <div
+                id="progressBar"
+                class="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                style="width: 33%"
+              ></div>
+            </div>
+            <div class="flex justify-between mt-3 text-sm font-medium text-slate-500">
+              <span>Basic Info</span>
+              <span>Professional</span>
+              <span>Verification</span>
+            </div>
+          </div>
+
+          <!-- FORM -->
+          <form
+            id="techForm"
+            method="POST"
+            action="/technicians/register"
+            enctype="multipart/form-data"
+          >
+            <!-- STEP 1 -->
+            <div class="form-step">
+  <div class="space-y-6">
+
+    <div>
+      <label class="text-sm font-medium">Full Name</label>
+      <input name="name" required class="input">
+    </div>
+
+    <div>
+      <label class="text-sm font-medium">Phone</label>
+      <input name="phone" required class="input">
+    </div>
+
+    <div>
+      <label class="text-sm font-medium">Email</label>
+      <input name="email" type="email" class="input">
+    </div>
+
+    <!-- CITY FROM DATABASE -->
+    <div>
+      <label class="text-sm font-medium">City</label>
+
+      <select name="city" required class="input">
+        <option value="">Select your city</option>
+
+        <% cities.forEach(city => { %>
+          <option value="<%= city._id %>">
+            <%= city.name %>
+          </option>
+        <% }) %>
+
+      </select>
+    </div>
+
+  </div>
+</div>
+
+
+            <!-- STEP 2 -->
+            <div class="form-step hidden">
+  <div class="space-y-6">
+
+    <!-- MULTI SERVICES FROM DB -->
+    <div>
+      <label class="text-sm font-medium">Select Services</label>
+
+      <div class="grid grid-cols-2 gap-3 mt-2">
+
+        <% services.forEach(service => { %>
+
+          <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:bg-slate-50">
+            <input type="checkbox"
+                   name="servicesId"
+                   value="<%= service._id %>">
+            <span><%= service.name %></span>
+          </label>
+
+        <% }) %>
+
+      </div>
+    </div>
+
+    <!-- RADIUS -->
+    <div>
+      <label class="text-sm font-medium">Service Radius (KM)</label>
+      <input name="serviceRadiusKm" type="number" required class="input">
+    </div>
+
+    <!-- LOCATION -->
+    <input type="hidden" name="longitude" id="longitude">
+    <input type="hidden" name="latitude" id="latitude">
+
+    <button type="button"
+            id="getLocation"
+            class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm hover:bg-indigo-100">
+
+      Detect Current Location
+    </button>
+
+    <p id="locationDisplay" class="text-green-600 text-sm"></p>
+
+  </div>
+</div>
+
+
+            <!-- STEP 3 -->
+             <div class="form-step hidden">
+  <div class="space-y-7">
+
+    <!-- PROFILE IMAGE -->
+    <div>
+      <label class="text-sm font-medium">Profile Image</label>
+
+      <input type="file"
+             name="profileImage"
+             id="profileInput"
+             accept="image/*"
+             required
+             class="mt-2 w-full border border-slate-300 rounded-lg px-4 py-2">
+
+      <img id="profilePreview"
+           class="w-32 h-32 rounded-full mt-4 object-cover hidden border shadow-sm">
+    </div>
+
+    <!-- KYC DETAILS -->
+    <div class="bg-slate-50 border rounded-xl p-5 space-y-5">
+
+      <h3 class="font-semibold text-slate-800 flex items-center gap-2">
+        <i class="fas fa-id-card text-indigo-600"></i>
+        Identity Verification
+      </h3>
+
+      <!-- ID TYPE -->
+      <div>
+        <label class="text-sm font-medium">ID Type</label>
+
+        <select name="idType"
+                required
+                class="mt-2 w-full border border-slate-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-600">
+
+          <option value="">Select ID type</option>
+          <option value="AADHAR">Aadhar Card</option>
+          <option value="PAN">PAN Card</option>
+          <option value="DRIVING_LICENSE">Driving License</option>
+          <option value="PASSPORT">Passport</option>
+
+        </select>
+      </div>
+
+      <!-- ID NUMBER -->
+      <div>
+        <label class="text-sm font-medium">ID Number</label>
+
+        <input name="idNumber"
+               required
+               placeholder="Enter ID number"
+               class="mt-2 w-full border border-slate-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-600">
+      </div>
+
+      <!-- DOCUMENT UPLOAD -->
+      <div>
+        <label class="text-sm font-medium">Upload ID Document</label>
+
+        <input type="file"
+               name="kycDocument"
+               id="kycInput"
+               multiple
+               required
+               class="mt-2 w-full border border-slate-300 rounded-lg px-4 py-2">
+
+        <!-- PREVIEW -->
+        <div id="kycPreview"
+             class="flex gap-3 flex-wrap mt-4"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+            <!-- Buttons -->
+            <div class="mt-10 flex justify-between">
+              <button
+                type="button"
+                id="prevBtn"
+                class="px-6 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 hidden"
+              >
+                Back
+              </button>
+
+              <button
+                type="button"
+                id="nextBtn"
+                class="ml-auto px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+              >
+                Next Step
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCRIPT ================= -->
+    <script>
+      const steps = document.querySelectorAll('.form-step');
+      const nextBtn = document.getElementById('nextBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const progressBar = document.getElementById('progressBar');
+
+      let currentStep = 0;
+
+      function updateSteps() {
+        steps.forEach((step, index) => {
+          step.classList.toggle('hidden', index !== currentStep);
+        });
+
+        progressBar.style.width = ((currentStep + 1) / steps.length) * 100 + '%';
+
+        prevBtn.classList.toggle('hidden', currentStep === 0);
+        nextBtn.textContent = currentStep === steps.length - 1 ? 'Submit Application' : 'Next Step';
+      }
+
+      nextBtn.addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
+          currentStep++;
+          updateSteps();
+        } else {
+          document.getElementById('techForm').submit();
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (currentStep > 0) {
+          currentStep--;
+          updateSteps();
+        }
+      });
+
+      // LOCATION
+      document.getElementById('getLocation').addEventListener('click', () => {
+        navigator.geolocation.getCurrentPosition(pos => {
+          document.getElementById('latitude').value = pos.coords.latitude;
+          document.getElementById('longitude').value = pos.coords.longitude;
+          document.getElementById('locationDisplay').innerText = `Location detected ✓`;
+        });
+      });
+
+      // PROFILE PREVIEW
+      document.getElementById('profileInput').addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+          const preview = document.getElementById('profilePreview');
+          preview.src = URL.createObjectURL(file);
+          preview.classList.remove('hidden');
+        }
+      });
+
+      // KYC PREVIEW
+      document.getElementById('kycInput').addEventListener('change', function () {
+        const container = document.getElementById('kycPreview');
+        container.innerHTML = '';
+
+        Array.from(this.files).forEach(file => {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          img.className = 'w-24 h-24 object-cover border rounded';
+          container.appendChild(img);
+        });
+      });
+
+      updateSteps();
+    </script>
+    <%- include("../partials/toast-script.ejs") %>
+  </body>
+</html>

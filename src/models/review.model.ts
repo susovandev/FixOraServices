@@ -1,17 +1,5 @@
 import { type Document, type Types, Schema, model } from 'mongoose';
 
-/*
-reviews
-{
-  _id,
-  bookingId,
-  customerId,
-  technicianId,
-  rating,
-  comment,
-  createdAt
-}*/
-
 export interface IReviewDocument extends Document {
   _id: Types.ObjectId;
   bookingId: Types.ObjectId;

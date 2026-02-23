@@ -1,7 +1,7 @@
 import express, { type Application, type Request, type Response } from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import session from 'express-session';
@@ -13,38 +13,41 @@ import morganMiddleware from 'config/morgan.config.js';
 import redisClient from 'config/redis.config.js';
 import { REQUEST_BODY_LIMIT, SESSION_MAX_AGE } from 'constants/index.js';
 import { notFoundHandler } from 'middlewares/notFound.middleware.js';
+import { globalErrorHandler } from 'middlewares/error.middleware.js';
+import configureWebRoutes from 'web.routes.js';
+import { viewLocals } from 'middlewares/flash.middleware.js';
 
 export default function initApplication(): Application {
   const app = express();
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
+  // app.use(
+  //   helmet({
+  //     contentSecurityPolicy: {
+  //       directives: {
+  //         defaultSrc: ["'self'"],
 
-          imgSrc: ["'self'", 'https://res.cloudinary.com', 'https://ui-avatars.com', 'data:'],
+  //         imgSrc: ["'self'", 'https://res.cloudinary.com', 'https://ui-avatars.com', 'data:'],
 
-          styleSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            'https://fonts.googleapis.com',
-            'https://cdnjs.cloudflare.com',
-            'https://cdn.jsdelivr.net',
-          ],
+  //         styleSrc: [
+  //           "'self'",
+  //           "'unsafe-inline'",
+  //           'https://fonts.googleapis.com',
+  //           'https://cdnjs.cloudflare.com',
+  //           'https://cdn.jsdelivr.net',
+  //         ],
 
-          scriptSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            'https://cdn.tailwindcss.com',
-            'https://cdn.jsdelivr.net',
-          ],
+  //         scriptSrc: [
+  //           "'self'",
+  //           "'unsafe-inline'",
+  //           'https://cdn.tailwindcss.com',
+  //           'https://cdn.jsdelivr.net',
+  //         ],
 
-          fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com'],
-        },
-      },
-    })
-  );
+  //         fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com'],
+  //       },
+  //     },
+  //   })
+  // );
 
   app.use(morganMiddleware);
 
@@ -79,16 +82,13 @@ export default function initApplication(): Application {
   );
 
   app.use(flash());
+  app.use(viewLocals);
 
-  app.get('/', (req: Request, res: Response) => {
-    return res.render('pages/index', {
-      title: 'FixOraService',
-      username: 'John Doe',
-      user: null,
-    });
-  });
+  configureWebRoutes(app);
 
   app.use(notFoundHandler);
+
+  // app.use(globalErrorHandler);
 
   return app;
 }

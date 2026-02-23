@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Resend OTP | FixOra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.08), transparent 40%),
+          radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.05), transparent 40%), #f8fafc;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center px-6">
+    <%- include("../../partials/toast.ejs") %>
+
+    <div class="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-2xl p-10">
+      <!-- TITLE -->
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-semibold text-slate-900">Didn't receive OTP?</h1>
+
+        <p class="text-sm text-gray-500 mt-2">
+          We can resend a new verification code to
+          <span class="font-medium text-slate-700">+91 <%= phone || '' %></span>
+        </p>
+      </div>
+
+      <!-- RESEND FORM -->
+      <form action="/technician/resend-otp" method="POST" class="space-y-5">
+        <input type="hidden" name="phone" value="<%= phone %>" />
+
+        <button
+          id="resendBtn"
+          type="submit"
+          disabled
+          class="w-full py-3 rounded-xl bg-slate-900 text-white font-medium opacity-50 cursor-not-allowed transition shadow-lg"
+        >
+          Resend OTP in <span id="timer">20</span>s
+        </button>
+      </form>
+
+      <!-- BACK -->
+      <div class="text-center mt-6">
+        <a
+          href="/technician/verify-otp?phone=<%= phone %>"
+          class="text-sm text-emerald-600 font-medium hover:underline"
+        >
+          ← Back to OTP verification
+        </a>
+      </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+      let time = 20;
+      const btn = document.getElementById('resendBtn');
+      const timerEl = document.getElementById('timer');
+
+      const countdown = setInterval(() => {
+        time--;
+        timerEl.textContent = time;
+
+        if (time <= 0) {
+          clearInterval(countdown);
+
+          btn.disabled = false;
+          btn.classList.remove('opacity-50', 'cursor-not-allowed');
+          btn.classList.add('hover:bg-slate-800');
+
+          btn.innerHTML = `
+<span class="flex items-center justify-center gap-2">
+<i class="fas fa-paper-plane"></i>
+Send OTP Now
+</span>
+`;
+        }
+      }, 1000);
+    </script>
+
+    <!-- FontAwesome for icon -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <%- include("../../partials/toast-script.ejs") %>
+  </body>
+</html>

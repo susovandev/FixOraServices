@@ -1,9 +1,11 @@
 import { type Document, type Types, Schema, model } from 'mongoose';
 
 export enum BookingAssignmentStatus {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED',
+  PENDING = 'pending',
+  COMPLETED = 'completed',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
+  ASSIGNED = 'assigned',
 }
 export interface IBookingAssignmentDocument extends Document {
   _id: Types.ObjectId;

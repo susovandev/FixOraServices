@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FixOra Technician Earnings</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 10%, rgba(16,185,129,.08),transparent 40%),
+radial-gradient(circle at 90% 0%, rgba(99,102,241,.08),transparent 40%),#f8fafc;
+}
+</style>
+</head>
+
+<body class="text-slate-800">
+  <%- include('../../partials/toast.ejs') %>
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-white border-r border-slate-200 p-6 hidden md:flex flex-col">
+
+<h2 class="text-2xl font-semibold text-slate-600 mb-10">FixOra</h2>
+
+<nav class="space-y-4 text-sm flex-1">
+
+<a href="/technician/dashboard" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="/technician/bookings" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-calendar-check"></i> Bookings
+</a>
+
+<a class="flex items-center gap-3 font-medium text-slate-600">
+<i class="fa-solid fa-wallet"></i> Earnings
+</a>
+
+<a href="/technician/reviews" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-star"></i> Reviews
+</a>
+
+<a href="/technician/account" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-user"></i> Account
+</a>
+
+</nav>
+
+<form action="/technician/logout" method="POST">
+<button class="w-full mt-6 bg-slate-900 text-white py-2 rounded-lg">Logout</button>
+</form>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="flex-1">
+
+<!-- TOPBAR -->
+<header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+
+<h1 class="text-xl font-semibold">Earnings Overview</h1>
+
+<div class="flex items-center gap-5">
+
+<img src="<%= technician.profilePhoto?.url || 'https://i.pravatar.cc/40' %>"
+class="w-9 h-9 rounded-full">
+
+</div>
+</header>
+
+
+<div class="p-6 space-y-8">
+
+<!-- SUMMARY CARDS -->
+<div class="grid md:grid-cols-3 gap-6">
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">Total Earnings</p>
+<p class="text-3xl font-semibold mt-1">₹<%= earnings.total %></p>
+</div>
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">This Month</p>
+<p class="text-3xl font-semibold mt-1">₹<%= earnings.month %></p>
+</div>
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">Available Balance</p>
+<p class="text-3xl font-semibold mt-1">₹<%= earnings.available %></p>
+</div>
+
+</div>
+
+
+<!-- GRAPH + PAYOUT -->
+<div class="grid lg:grid-cols-3 gap-6">
+
+<!-- EARNINGS GRAPH -->
+<div class="lg:col-span-2 bg-white border rounded-2xl p-6">
+
+<p class="font-semibold mb-4">Last 7 Days Earnings</p>
+
+<div class="flex items-end gap-2 h-44">
+
+<% earningsGraph.forEach(v=>{ %>
+<div class="bg-slate-600 rounded w-5" style="height:<%= v %>%"></div>
+<% }) %>
+
+</div>
+
+<p class="text-xs text-slate-400 mt-3">Daily earnings performance</p>
+
+</div>
+
+
+<!-- WITHDRAW CARD -->
+<div class="bg-white border rounded-2xl p-6 flex flex-col">
+
+<p class="font-semibold mb-3">Withdraw Balance</p>
+
+<p class="text-3xl font-semibold mb-6">₹<%= earnings.available %></p>
+
+<form action="/technician/withdraw" method="POST" class="space-y-3">
+
+<input name="amount"
+type="number"
+placeholder="Enter amount"
+max="<%= earnings.available %>"
+class="w-full border rounded-lg px-3 py-2">
+
+<button class="w-full bg-slate-600 text-white py-2 rounded-lg hover:bg-slate-700 transition">
+Request Withdrawal
+</button>
+
+</form>
+
+<p class="text-xs text-slate-400 mt-4">
+Payouts are processed within 24–48 hours.
+</p>
+
+</div>
+
+</div>
+
+
+<!-- TRANSACTION HISTORY -->
+<div class="bg-white border rounded-2xl">
+
+<div class="p-6 border-b flex justify-between items-center">
+<h2 class="font-semibold">Transaction History</h2>
+</div>
+
+<div class="overflow-x-auto">
+
+<table class="w-full text-sm">
+
+<thead class="bg-slate-50 text-slate-500">
+<tr>
+<th class="text-left p-4">Job</th>
+<th class="text-left p-4">Customer</th>
+<th class="text-left p-4">Date</th>
+<th class="text-left p-4">Amount</th>
+<th class="text-left p-4">Status</th>
+</tr>
+</thead>
+
+<tbody class="divide-y">
+
+<% transactions.forEach(t=>{ %>
+
+<tr>
+
+<td class="p-4 font-medium"><%= t.serviceName %></td>
+
+<td class="p-4"><%= t.customerName %></td>
+
+<td class="p-4 text-slate-500"><%= t.date %></td>
+
+<td class="p-4 font-semibold">₹<%= t.amount %></td>
+
+<td class="p-4">
+
+<% if(t.status==='paid'){ %>
+<span class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">Paid</span>
+<% } else if(t.status==='pending'){ %>
+<span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 rounded">Pending</span>
+<% } else { %>
+<span class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded"><%= t.status %></span>
+<% } %>
+
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+</div>
+
+  <%- include('../../partials/toast-script.ejs) %>
+</body>
+</html>

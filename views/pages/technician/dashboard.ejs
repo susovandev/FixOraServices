@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FixOra Technician Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 10%, rgba(16,185,129,.08),transparent 40%),
+radial-gradient(circle at 90% 0%, rgba(99,102,241,.08),transparent 40%),#f8fafc;
+}
+</style>
+
+</head>
+
+<body class="text-slate-800">
+  <%- include('../../partials/toast.ejs') %>
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+
+<aside class="w-64 bg-white border-r border-slate-200 p-6 hidden md:flex flex-col">
+
+<h2 class="text-2xl font-semibold text-slate-600 mb-10">FixOra</h2>
+
+<nav class="space-y-4 text-sm flex-1">
+
+<a class="flex items-center gap-3 font-medium text-slate-600">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="/technician/bookings" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-calendar-check"></i> Bookings
+</a>
+
+<a href="/technician/earnings" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-wallet"></i> Earnings
+</a>
+
+<a href="/technician/reviews" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-star"></i> Reviews
+</a>
+
+<a href="/technician/account" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-user"></i> Account
+</a>
+
+</nav>
+
+<form action="/technician/logout" method="POST">
+<button class="w-full mt-6 bg-slate-900 text-white py-2 rounded-lg">Logout</button>
+</form>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="flex-1">
+
+<!-- TOPBAR -->
+
+<header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+
+<h1 class="text-xl font-semibold">Welcome back, <%= technician.fullName || "Technician" %></h1>
+
+<div class="flex items-center gap-6">
+
+<!-- ONLINE TOGGLE -->
+
+<label class="flex items-center gap-2 text-sm cursor-pointer">
+<input type="checkbox" <%= technician.isOnline?'checked':'' %> 
+onchange="location.href='/technician/toggle-online'" />
+<span class="font-medium">Online</span>
+</label>
+
+<img src="<%= technician.profilePhoto?.url || 'https://i.pravatar.cc/40' %>"
+class="w-9 h-9 rounded-full">
+
+</div>
+
+</header>
+
+<div class="p-6 space-y-8">
+
+<!-- PROFILE COMPLETION -->
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500 mb-2">Profile completion</p>
+<div class="w-full bg-slate-200 rounded-full h-2">
+<div class="bg-slate-600 h-2 rounded-full" style="width:<%= profilePercent %>%"></div>
+</div>
+<p class="text-xs mt-2 text-slate-500"><%= profilePercent %>% completed</p>
+</div>
+
+<!-- STATS -->
+
+<div class="grid md:grid-cols-4 gap-6">
+
+<div class="bg-white p-6 rounded-2xl border">
+<p class="text-sm text-slate-500">Pending Requests</p>
+<p class="text-3xl font-semibold"><%= stats.pending %></p>
+</div>
+
+<div class="bg-white p-6 rounded-2xl border">
+<p class="text-sm text-slate-500">Completed Jobs</p>
+<p class="text-3xl font-semibold"><%= stats.completed %></p>
+</div>
+
+<div class="bg-white p-6 rounded-2xl border">
+<p class="text-sm text-slate-500">Avg Rating</p>
+<p class="text-3xl font-semibold"><%= stats.rating %> ★</p>
+</div>
+
+<div class="bg-white p-6 rounded-2xl border">
+<p class="text-sm text-slate-500">Monthly Earnings</p>
+<p class="text-3xl font-semibold">₹<%= stats.earnings %></p>
+</div>
+
+</div>
+
+<!-- BOOKINGS + EARNINGS -->
+
+<div class="grid lg:grid-cols-3 gap-6">
+
+<!-- UPCOMING BOOKINGS -->
+
+<div class="lg:col-span-2 bg-white border rounded-2xl">
+
+<div class="p-6 border-b font-semibold">Upcoming Bookings</div>
+
+<div class="divide-y">
+
+<% upcomingBookings.forEach(b=>{ %>
+
+<div class="p-5 flex justify-between items-center">
+
+<div>
+<p class="font-medium"><%= b.customerName %></p>
+<p class="text-sm text-slate-500"><%= b.serviceName %> • <%= b.date %></p>
+</div>
+
+<div class="flex gap-2">
+
+<% if(b.status==='pending'){ %>
+
+<form action="/technician/booking/<%= b._id %>/accept" method="POST">
+<button class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm">Accept</button>
+</form>
+
+<form action="/technician/booking/<%= b._id %>/reject" method="POST">
+<button class="px-3 py-1 bg-red-600 text-white rounded-lg text-sm">Reject</button>
+</form>
+
+<% } else { %>
+
+<span class="text-sm font-medium text-slate-600"><%= b.status %></span>
+
+<% } %>
+
+</div>
+
+</div>
+
+<% }) %>
+
+</div>
+</div>
+
+<!-- EARNINGS MINI GRAPH -->
+
+<div class="bg-white border rounded-2xl p-6">
+
+<p class="font-semibold mb-4">Earnings Trend</p>
+
+<div class="flex items-end gap-2 h-40">
+
+<% earningsGraph.forEach(v=>{ %>
+
+<div class="bg-slate-500 rounded w-4" style="height:<%= v %>%"></div>
+<% }) %>
+
+</div>
+
+<p class="text-xs text-slate-400 mt-3">Last 7 days</p>
+
+</div>
+
+</div>
+
+<!-- REVIEWS -->
+
+<div class="bg-white border rounded-2xl p-6">
+
+<h2 class="font-semibold mb-4">Recent Reviews</h2>
+
+<div class="space-y-4">
+
+<% reviews.forEach(r=>{ %>
+
+<div class="border-b pb-3">
+<p class="font-medium"><%= r.rating %> ★</p>
+<p class="text-sm text-slate-600"><%= r.comment %></p>
+<p class="text-xs text-slate-400 mt-1"><%= r.createdAt %></p>
+</div>
+
+<% }) %>
+
+</div>
+
+</div>
+
+<!-- ACCOUNT STATUS -->
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">KYC Status</p>
+<p class="text-lg font-semibold"><%= kycStatus %></p>
+</div>
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">Bank Status</p>
+<p class="text-lg font-semibold"><%= bankStatus %></p>
+</div>
+
+</div>
+
+</div>
+</main>
+</div>
+<%- include('../../partials/toast-script.ejs') %>
+</body>
+</html>

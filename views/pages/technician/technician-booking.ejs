@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FixOra Bookings</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 10%, rgba(16,185,129,.08),transparent 40%),
+radial-gradient(circle at 90% 0%, rgba(99,102,241,.08),transparent 40%),#f8fafc;
+}
+</style>
+</head>
+
+<body class="text-slate-800">
+    <%- include("../../partials/toast.ejs") %>
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-white border-r border-slate-200 p-6 hidden md:flex flex-col">
+
+<h2 class="text-2xl font-semibold text-slate-600 mb-10">FixOra</h2>
+
+<nav class="space-y-4 text-sm flex-1">
+
+<a href="/technician/dashboard" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a class="flex items-center gap-3 font-medium text-slate-600">
+<i class="fa-solid fa-calendar-check"></i> Bookings
+</a>
+
+<a href="/technician/earnings" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-wallet"></i> Earnings
+</a>
+
+<a href="/technician/reviews" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-star"></i> Reviews
+</a>
+
+<a href="/technician/account" class="flex items-center gap-3 text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-user"></i> Account
+</a>
+
+</nav>
+
+<form action="/technician/logout" method="POST">
+<button class="w-full mt-6 bg-slate-900 text-white py-2 rounded-lg">Logout</button>
+</form>
+
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1">
+
+<!-- TOPBAR -->
+<header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+
+<h1 class="text-xl font-semibold">Bookings</h1>
+
+<div class="flex items-center gap-6">
+
+<label class="flex items-center gap-2 text-sm cursor-pointer">
+<input type="checkbox" <%= technician.isOnline?'checked':'' %> 
+onchange="location.href='/technician/toggle-online'" />
+<span class="font-medium">Online</span>
+</label>
+
+<img src="<%= technician.profilePhoto?.url || 'https://i.pravatar.cc/40' %>"
+class="w-9 h-9 rounded-full">
+
+</div>
+
+</header>
+
+<div class="p-6">
+
+<!-- FILTER BAR -->
+<div class="bg-white border rounded-2xl p-4 mb-6 flex flex-wrap gap-3 justify-between">
+
+<div class="flex gap-3">
+
+<a href="?status=all"
+class="px-4 py-2 rounded-lg border text-sm <%= !query.status || query.status==='all' ? 'bg-slate-600 text-white border-slate-600' : 'bg-white' %>">
+All
+</a>
+
+<a href="?status=pending"
+class="px-4 py-2 rounded-lg border text-sm <%= query.status==='pending' ? 'bg-yellow-500 text-white border-yellow-500' : 'bg-white' %>">
+Pending
+</a>
+
+<a href="?status=accepted"
+class="px-4 py-2 rounded-lg border text-sm <%= query.status==='accepted' ? 'bg-slate-600 text-white border-slate-600' : 'bg-white' %>">
+Accepted
+</a>
+
+<a href="?status=completed"
+class="px-4 py-2 rounded-lg border text-sm <%= query.status==='completed' ? 'bg-green-600 text-white border-green-600' : 'bg-white' %>">
+Completed
+</a>
+
+</div>
+
+</div>
+
+<!-- BOOKINGS LIST -->
+
+<% if(bookings.length === 0){ %>
+
+<div class="bg-white border rounded-2xl p-12 text-center">
+<i class="fa-regular fa-calendar text-4xl text-slate-300 mb-4"></i>
+<p class="text-slate-500">No bookings found</p>
+</div>
+
+<% } %>
+
+<div class="space-y-5">
+
+<% bookings.forEach(b=>{ %>
+
+<div class="bg-white border rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 hover:shadow-md transition">
+
+<!-- LEFT INFO -->
+<div class="flex gap-4">
+
+<img src="https://i.pravatar.cc/60?u=<%= b._id %>"
+class="w-14 h-14 rounded-full border">
+
+<div>
+<p class="font-semibold text-lg"><%= b.customerName %></p>
+<p class="text-sm text-slate-500"><%= b.serviceName %></p>
+<p class="text-sm text-slate-500 mt-1">
+<i class="fa-regular fa-calendar"></i>
+<%= b.date %> • <%= b.time %>
+</p>
+<p class="text-sm text-slate-400 mt-1">
+<i class="fa-solid fa-location-dot"></i>
+<%= b.address %>
+</p>
+</div>
+
+</div>
+
+<!-- STATUS -->
+<div class="flex flex-col items-start md:items-end gap-3">
+
+<span class="
+px-3 py-1 rounded-full text-xs font-semibold
+<%=
+b.status==='pending'?'bg-yellow-100 text-yellow-700':
+b.status==='accepted'?'bg-slate-100 text-slate-700':
+b.status==='in_progress'?'bg-blue-100 text-blue-700':
+'bg-green-100 text-green-700'
+%>
+">
+<%= b.status.replace('_',' ') %>
+</span>
+
+<!-- ACTIONS -->
+<div class="flex gap-2">
+
+<% if(b.status==='pending'){ %>
+
+<form action="/technician/booking/<%= b._id %>/accept" method="POST">
+<button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
+Accept
+</button>
+</form>
+
+<form action="/technician/booking/<%= b._id %>/reject" method="POST">
+<button class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm">
+Reject
+</button>
+</form>
+
+<% } %>
+
+<% if(b.status==='accepted'){ %>
+
+<form action="/technician/booking/<%= b._id %>/start" method="POST">
+<button class="px-4 py-2 bg-slate-600 text-white rounded-lg text-sm">
+Start Job
+</button>
+</form>
+
+<% } %>
+
+<% if(b.status==='in_progress'){ %>
+
+<form action="/technician/booking/<%= b._id %>/complete" method="POST">
+<button class="px-4 py-2 bg-green-700 text-white rounded-lg text-sm">
+Complete
+</button>
+</form>
+
+<% } %>
+
+</div>
+
+</div>
+
+</div>
+
+<% }) %>
+
+</div>
+
+</div>
+
+</main>
+</div>
+    <%- include("../../partials/toast-script.ejs") %>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FixOra Technician Reviews</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body{
+background:
+radial-gradient(circle at 10% 10%, rgba(16,185,129,.08),transparent 40%),
+radial-gradient(circle at 90% 0%, rgba(99,102,241,.08),transparent 40%),#f8fafc;
+}
+</style>
+</head>
+
+<body class="text-slate-800">
+  <%- include("../../partials/toast.ejs") %>
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-white border-r border-slate-200 p-6 hidden md:flex flex-col">
+
+<h2 class="text-2xl font-semibold text-slate-600 mb-10">FixOra</h2>
+
+<nav class="space-y-4 text-sm flex-1">
+
+<a href="/technician/dashboard" class="flex gap-3 items-center text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-chart-line"></i> Dashboard
+</a>
+
+<a href="/technician/bookings" class="flex gap-3 items-center text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-calendar-check"></i> Bookings
+</a>
+
+<a href="/technician/earnings" class="flex gap-3 items-center text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-wallet"></i> Earnings
+</a>
+
+<a class="flex gap-3 items-center font-medium text-slate-600">
+<i class="fa-solid fa-star"></i> Reviews
+</a>
+
+<a href="/technician/account" class="flex gap-3 items-center text-slate-600 hover:text-slate-600">
+<i class="fa-solid fa-user"></i> Account
+</a>
+
+</nav>
+
+<form action="/technician/logout" method="POST">
+<button class="w-full mt-6 bg-slate-900 text-white py-2 rounded-lg">Logout</button>
+</form>
+
+</aside>
+
+
+
+<!-- MAIN -->
+<main class="flex-1">
+
+<!-- TOPBAR -->
+<header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+
+<h1 class="text-xl font-semibold">Customer Reviews</h1>
+
+<img src="<%= technician.profilePhoto?.url || 'https://i.pravatar.cc/40' %>"
+class="w-9 h-9 rounded-full">
+
+</header>
+
+
+<div class="p-6 space-y-8">
+
+<!-- SUMMARY -->
+<div class="grid md:grid-cols-3 gap-6">
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">Average Rating</p>
+<p class="text-3xl font-semibold mt-1"><%= rating.avg.toFixed(1) %> ⭐</p>
+</div>
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">Total Reviews</p>
+<p class="text-3xl font-semibold mt-1"><%= rating.count %></p>
+</div>
+
+<div class="bg-white border rounded-2xl p-6">
+<p class="text-sm text-slate-500">5 Star Reviews</p>
+<p class="text-3xl font-semibold mt-1"><%= rating.fiveStar %></p>
+</div>
+
+</div>
+
+
+
+<!-- REVIEWS LIST -->
+<div class="bg-white border rounded-2xl">
+
+<div class="p-6 border-b flex justify-between items-center">
+<h2 class="font-semibold">Recent Feedback</h2>
+</div>
+
+<div class="divide-y">
+
+<% if(reviews.length===0){ %>
+
+<p class="p-6 text-slate-500">No reviews yet.</p>
+
+<% } %>
+
+
+<% reviews.forEach(r=>{ %>
+
+<div class="p-6 flex gap-4">
+
+<img src="https://i.pravatar.cc/60?u=<%= r.customerId %>"
+class="w-12 h-12 rounded-full">
+
+<div class="flex-1">
+
+<div class="flex justify-between items-start">
+
+<div>
+<p class="font-semibold"><%= r.customerName %></p>
+
+<div class="text-yellow-500 text-sm mt-1">
+<% for(let i=1;i<=5;i++){ %>
+<i class="fa-star <%= i<=r.rating ? 'fa-solid' : 'fa-regular' %>"></i>
+<% } %>
+</div>
+
+</div>
+
+<p class="text-xs text-slate-400">
+<%= new Date(r.createdAt).toDateString() %>
+</p>
+
+</div>
+
+<% if(r.comment){ %>
+<p class="mt-3 text-slate-600 leading-relaxed"><%= r.comment %></p>
+<% } %>
+
+</div>
+
+</div>
+
+<% }) %>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+</div>
+  <%- include("../../partials/toast-script.ejs") %>
+</body>
+</html>

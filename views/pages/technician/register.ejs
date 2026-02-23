@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Technician Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08), transparent 40%),
+          radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.06), transparent 40%), #f8fafc;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center text-gray-800 px-6">
+    <%- include("../../partials/toast.ejs") %>
+
+    <div
+      class="w-full max-w-6xl grid md:grid-cols-2 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200"
+    >
+      <!-- LEFT BUSINESS PANEL -->
+      <div class="hidden md:flex flex-col justify-center p-12 bg-slate-900 text-white">
+        <h1 class="text-4xl font-bold mb-4">Join FixOra Network</h1>
+
+        <p class="text-gray-300 mb-8">
+          Grow your technician business with verified bookings, secure payouts and intelligent
+          service matching.
+        </p>
+
+        <ul class="space-y-4 text-sm text-gray-300">
+          <li class="flex gap-3">
+            <span class="text-emerald-400">✔</span>
+            Instant nearby job alerts
+          </li>
+
+          <li class="flex gap-3">
+            <span class="text-emerald-400">✔</span>
+            Guaranteed weekly payments
+          </li>
+
+          <li class="flex gap-3">
+            <span class="text-emerald-400">✔</span>
+            Smart radius-based bookings
+          </li>
+
+          <li class="flex gap-3">
+            <span class="text-emerald-400">✔</span>
+            Performance dashboard
+          </li>
+        </ul>
+      </div>
+
+      <!-- RIGHT FORM -->
+      <div class="p-10 md:p-14">
+        <div class="max-w-md mx-auto">
+          <h2 class="text-2xl font-semibold mb-2">Technician Registration</h2>
+
+          <p class="text-gray-500 mb-8 text-sm">Create your FixOra technician account</p>
+
+          <form action="/technicians/register" method="POST" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium mb-1">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                required
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-600 outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Phone</label>
+              <div class="flex">
+                <span class="px-4 flex items-center bg-gray-100 border border-r-0 rounded-l-xl"
+                  >+91</span
+                >
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  pattern="[0-9]{10}"
+                  class="w-full px-4 py-3 rounded-r-xl border border-gray-300 focus:ring-2 focus:ring-emerald-600 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Email (optional)</label>
+              <input
+                type="email"
+                name="email"
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-600 outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="w-full py-3 rounded-xl text-white font-medium bg-slate-900 hover:bg-slate-800 transition shadow-lg"
+            >
+              Continue → Verify Phone
+            </button>
+          </form>
+
+          <p class="text-sm text-gray-500 mt-6 text-center">
+            Already registered?
+            <a href="/technicians/login" class="text-emerald-600 font-medium hover:underline">
+              Login here
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <%- include("../../partials/toast-script.ejs") %>
+  </body>
+</html>

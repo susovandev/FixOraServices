@@ -17,6 +17,7 @@ redisClient.on('connect', () => {
 
 redisClient.on('error', err => {
   Logger.error(`Redis connection error: ${err}`);
+  process.exit(1);
 });
 
 await redisClient.connect();

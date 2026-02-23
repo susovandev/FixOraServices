@@ -1,0 +1,154 @@
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <img src="/assets/logo.png" class="h-8" alt="FixOra Logo" />
+      <span class="font-semibold text-lg text-slate-900">
+  FixOra <span class="font-normal text-slate-500">Services</span>
+</span>
+
+    </div>
+
+    <!-- Nav -->
+<nav class="hidden md:flex items-center">
+  <a href="/services"
+     class="relative px-6 py-2.5 rounded-full
+            text-sm font-semibold
+            text-white
+            bg-slate-900
+            border border-slate-800
+            shadow-md
+            hover:bg-slate-800
+            hover:-translate-y-0.5
+            hover:shadow-xl
+            transition-all duration-300
+            group overflow-hidden">
+
+    <!-- Green Shine -->
+    <span class="absolute inset-0 -translate-x-full
+                 bg-gradient-to-r from-transparent via-green-400/40 to-transparent
+                 group-hover:translate-x-full
+                 transition-transform duration-700 ease-in-out"></span>
+
+    <span class="relative z-10">
+      Book Service Instantly
+    </span>
+  </a>
+</nav>
+    <!-- Actions -->
+    <div class="flex items-center gap-4 relative">
+      <!-- Location (future live) -->
+      <button
+        class="hidden lg:flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900 transition-colors duration-200"
+        id="location-btn"
+      >
+        <i data-lucide="map-pin" class="w-4 h-4"></i>
+      <span id="location-text">Detecting location...</span>
+      </button>
+
+      <!-- Search -->
+      <div class="relative hidden md:block">
+        <input
+          type="text"
+          placeholder="Search for services"
+          class="px-3 py-2 w-56 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-600 focus:border-slate-600"
+          id="service-search"
+        />
+
+        <!-- Search Dropdown -->
+        <div
+          id="search-dropdown"
+class="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-xl hidden"
+        >
+          <!-- Dynamic items -->
+          <div class="p-3 text-sm text-gray-500">Start typing to search…</div>
+        </div>
+      </div>
+
+      <!-- Icons -->
+      <div class="flex items-center gap-3">
+        <button class="p-2 rounded-full hover:bg-slate-100
+ transition">
+          <a href="/cart">
+            <i class="w-5 h-5 fas fa-shopping-cart"></i>
+          </a>
+        </button>
+
+        <!-- Join as Technician CTA -->
+<a
+  href="/technician"
+  class="hidden md:flex items-center gap-2
+         px-4 py-2 rounded-xl
+         bg-slate-900
+         text-white text-sm font-medium
+         shadow-md hover:shadow-lg
+         hover:scale-[1.02] active:scale-[0.98]
+         transition-all duration-200"
+>
+  <span class="relative flex h-2 w-2">
+    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+    <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+  </span>
+
+  Join as a Technician
+
+  <span class="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">
+    Earn up to ₹50K+
+  </span>
+</a>
+
+
+<!-- Profile -->
+<div class="relative">
+
+  <!-- BUTTON -->
+  <button id="profileBtn"
+    class="p-2 rounded-full hover:bg-gray-100 transition">
+    <i class="fas fa-user w-5 h-5"></i>
+  </button>
+
+  <!-- DROPDOWN -->
+  <div id="profileDropdown"
+    class="absolute right-0 mt-2 w-60 bg-white border border-slate-200
+    rounded-xl shadow-xl opacity-0 scale-95 pointer-events-none
+    transition-all duration-200 origin-top-right z-50">
+
+    <% if (!user) { %>
+
+      <a href="/login" class="block px-4 py-2 text-sm hover:bg-slate-50">
+        <i class="fa-solid fa-right-to-bracket mr-2"></i> Login
+      </a>
+    <% } else { %>
+
+      <div class="px-4 py-3 text-sm text-slate-500 border-b">
+        <span class="font-semibold text-slate-800"><%= user.username || user.email || user.phone %></span>
+      </div>
+
+      <a href="/dashboard" class="block px-4 py-2 text-sm hover:bg-slate-50">
+        <i class="fa-solid fa-chart-line mr-2"></i> Dashboard
+      </a>
+
+      <a href="/orders" class="block px-4 py-2 text-sm hover:bg-slate-50">
+        <i class="fa-solid fa-calendar-check mr-2"></i> My Bookings
+      </a>
+
+      <a href="/profile" class="block px-4 py-2 text-sm hover:bg-slate-50">
+        <i class="fa-solid fa-user mr-2"></i> Profile
+      </a>
+
+      <hr class="my-1">
+
+      <a href="/logout"
+        class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-xl">
+        <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
+      </a>
+
+    <% } %>
+
+  </div>
+
+</div>
+
+      </div>
+  </div>
+</header>

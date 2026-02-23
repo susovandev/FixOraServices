@@ -5,9 +5,8 @@ export interface IRefreshTokenDocument extends Document {
   tokenHash: string;
   expiresAt: Date;
   isRevoked: boolean;
-  ip: string;
-  userAgent: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const refreshTokenSchema = new Schema<IRefreshTokenDocument>(
@@ -32,14 +31,6 @@ const refreshTokenSchema = new Schema<IRefreshTokenDocument>(
     isRevoked: {
       type: Boolean,
       default: false,
-    },
-
-    ip: { type: String },
-    userAgent: { type: String },
-
-    createdAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   { timestamps: false }
