@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import clientController from '../controllers/client.controller.js';
-import { upload } from '@config/multer.config.js';
+// import { upload } from '@config/multer.config.js';
 import { OptionalAuthEJS, UserGuardEJS } from '@middlewares/auth.middleware.js';
 
 const router: Router = Router();
@@ -14,12 +14,12 @@ router.get('/career', OptionalAuthEJS, clientController.getCareerPage);
 router.get('/career/:id', OptionalAuthEJS, clientController.getCareerDetail);
 router.get('/terms', OptionalAuthEJS, clientController.getTermsPage);
 router.get('/privacy', OptionalAuthEJS, clientController.getPrivacyPage);
-router.post(
-  '/career/:id/apply',
-  OptionalAuthEJS,
-  upload.single('resume'),
-  clientController.applyCareer
-);
+// router.post(
+//   '/career/:id/apply',
+//   OptionalAuthEJS,
+//   upload.single('resume'),
+//   clientController.
+// );
 
 router.get('/contact', OptionalAuthEJS, clientController.getContactPage);
 router.get('/cart', OptionalAuthEJS, clientController.getCartPage);

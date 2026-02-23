@@ -1,20 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CallbackWithoutResultAndOptionalError,
-  model,
-  Schema,
-  type Document,
-  type Types,
-} from 'mongoose';
+import { model, Schema, type Document, type Types } from 'mongoose';
 
 export interface IItemShape {
+  toObject(): any;
   serviceId: Types.ObjectId;
   quantity: number;
   name: string;
   price: number;
   image: string;
-  selectedDate: Date;
-  selectedSlot: string;
+  selectedDate: Date | null;
+  selectedSlot: string | null;
 }
 export interface ICart extends Document {
   userId: Types.ObjectId;
@@ -52,7 +47,7 @@ const cartSchema = new Schema<ICart>(
 
         name: String,
         price: Number,
-        image: String,
+        image: { type: String, default: '' },
         selectedDate: Date,
         selectedSlot: String,
       },

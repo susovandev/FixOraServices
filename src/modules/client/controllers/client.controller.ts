@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import crypto from 'node:crypto';
 import Logger from '@config/logger.config.js';
 import razorpayClient from '@config/razorpay.config.js';
@@ -217,8 +218,6 @@ class ClientController {
       title: 'Verify Phone',
     });
   }
-
-  async applyCareer(req: Request, res: Response) {}
 
   async loginHandler(req: Request, res: Response) {
     try {
@@ -454,12 +453,29 @@ class ClientController {
       if (index > -1) {
         cart!.items[index]!.quantity += 1;
       } else {
+        const pricing =
+          typeof service.pricingId === 'object' && service.pricingId !== null
+            ? service.pricingId
+            : { basePrice: 0 };
         cart.items.push({
           serviceId,
           quantity: 1,
           name: service.name,
-          price: service!.pricingId!.basePrice ?? 0,
-          image: service!.images?.[0]?.url,
+          price: (pricing as any).basePrice ?? 0,
+          image: service!.images?.[0]?.url ?? '',
+          selectedDate: null,
+          selectedSlot: null,
+          toObject: function () {
+            return {
+              serviceId: this.serviceId,
+              quantity: this.quantity,
+              name: this.name,
+              price: this.price,
+              image: this.image,
+              selectedDate: this.selectedDate,
+              selectedSlot: this.selectedSlot,
+            };
+          },
         });
       }
 
@@ -579,7 +595,6 @@ class ClientController {
     try {
       const userId = req?.user?._id;
       const { cartId } = req.body;
-
       const cart = await cartModel.findById(cartId).populate('items.serviceId');
 
       if (!cart) {
@@ -592,7 +607,10 @@ class ClientController {
 
       const order = await orderModel.create({
         userId,
-        items: cart.items,
+        items: cart.items.map(item => ({
+          ...(item.toObject?.() || item),
+          selectedDate: item.selectedDate ?? undefined,
+        })),
         subtotal: totalAmount,
         discount,
         totalAmount,
@@ -611,7 +629,6 @@ class ClientController {
       order.razorpayOrderId = razorpayOrder.id;
       await order.save();
 
-      console.log('razorpayOrder', razorpayOrder);
       res.json({
         success: true,
         key: process.env.RAZORPAY_KEY_ID,

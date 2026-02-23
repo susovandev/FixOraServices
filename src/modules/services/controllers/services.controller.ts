@@ -75,7 +75,7 @@ class ServicesController {
       } = {};
 
       if (serviceName) {
-        const formattedServiceName = serviceName.replace(/%20/g, ' ');
+        const formattedServiceName = (serviceName as string).replace(/%20/g, ' ');
         query.name = formattedServiceName;
       }
 
