@@ -39,14 +39,14 @@ class ClientController {
         },
         {
           $match: {
-            'category.name': 'Appliances',
+            'category.name': 'Appliance Repair',
           },
         },
         {
           $project: {
             _id: 1,
             name: 1,
-            image: 1,
+            images: 1,
             instant: 1,
           },
         },
@@ -105,6 +105,8 @@ class ClientController {
         { $limit: 10 },
       ]),
     ]);
+
+    console.log('Popular Services:', popularServices);
 
     return res.render('pages/index', {
       title: 'FixOraService',
@@ -484,7 +486,7 @@ class ClientController {
       res.json({ success: true });
     } catch (err) {
       Logger.error(`Error in addToWishlistHandler: ${err}`);
-      res.status(500).json({ message: 'Server error' });
+      res.status(500).json({ message: (err as Error).message });
     }
   }
 

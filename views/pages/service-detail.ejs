@@ -225,20 +225,60 @@ Secure online payment
 <%- include("../partials/client/footer.ejs") %>
 
 
+
+
+<!-- Toast container -->
+<div id="toast-container" class="fixed top-5 right-5 flex flex-col gap-2 z-50"></div>
+
 <script>
 const btn = document.getElementById("addToCartButton");
+const toastContainer = document.getElementById("toast-container");
+
+// Function to create a toast
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+  toast.className = `
+    min-w-[250px] max-w-xs px-4 py-2 rounded shadow-lg text-white 
+    ${type === "success" ? "bg-green-500" : "bg-red-500"} 
+    animate-slideIn
+  `;
+  toast.innerText = message;
+
+  toastContainer.appendChild(toast);
+
+  // Remove toast after 3 seconds
+  setTimeout(() => {
+    toast.classList.add("animate-slideOut");
+    toast.addEventListener("animationend", () => toast.remove());
+  }, 3000);
+}
+
+// Tailwind animations
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes slideIn {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+.animate-slideIn { animation: slideIn 0.3s ease forwards; }
+.animate-slideOut { animation: slideOut 0.3s ease forwards; }
+`;
+document.head.appendChild(style);
 
 btn.addEventListener("click", async function () {
-console.log('i am clicked')
+  console.log('Button clicked');
   const serviceId = this.dataset.serviceId;
 
   if(!serviceId){
-    alert("Service missing");
+    showToast("Service missing", "error");
     return;
   }
 
   try {
-
     btn.disabled = true;
     btn.innerText = "Adding...";
 
@@ -261,19 +301,19 @@ console.log('i am clicked')
     if(res.ok){
       btn.innerText = "✓ Added to Wishlist";
       btn.classList.add("bg-green-500","text-white","border-green-500");
+      showToast("Added to Wishlist successfully!");
     } else {
       btn.disabled = false;
       btn.innerText = "Add to Wishlist";
-      alert(data.message || "Failed");
+      showToast(data.message || "Failed", "error");
     }
 
   } catch(err){
     console.error(err);
     btn.disabled = false;
     btn.innerText = "Add to Wishlist";
-    alert("Server error");
+    showToast("Server error", "error");
   }
-
 });
 </script>
 

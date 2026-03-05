@@ -525,7 +525,8 @@
     >
       <% appliances.forEach(appliance => { %>
 
-      <div
+        <a href="/services/<%= appliance._id %>">
+                <div
         class="relative min-w-[240px] rounded-3xl
         bg-white/70 backdrop-blur-md
         border border-slate-200
@@ -550,7 +551,7 @@
         >
 
           <img
-            src="<%= appliance.image && appliance.image[0].url || '/images/placeholder.png' %>"
+            src="<%= appliance.images && appliance.images[0].url %>"
             alt="<%= appliance.name %>"
             class="h-28 object-contain
             transition duration-500
@@ -581,6 +582,8 @@
         </div>
 
       </div>
+        </a>
+
 
       <% }) %>
 

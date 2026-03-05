@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import servicesModel from 'models/services.model.js';
 import Logger from '@config/logger.config.js';
 import serviceCategoriesModel from 'models/service-categories.model.js';
+import reviewModel from 'models/review.model.js';
 
 class ServicesController {
   async getServicesPage(req: Request, res: Response) {
@@ -146,6 +147,12 @@ class ServicesController {
           city: 1,
         },
       });
+
+      console.log(JSON.stringify(service, null, 2));
+
+      if (!service) {
+        throw new Error('Service not found');
+      }
 
       return res.render('pages/service-detail', {
         user: null,
